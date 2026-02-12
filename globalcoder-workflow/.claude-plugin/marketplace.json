@@ -1,0 +1,18 @@
+{
+  "name": "globalcoder-marketplace",
+  "owner": {
+    "name": "GlobalCoder"
+  },
+  "metadata": {
+    "description": "GlobalCoder development workflow plugins",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "globalcoder-workflow",
+      "source": "./",
+      "description": "Full development workflow with agent team support",
+      "version": "1.0.0"
+    }
+  ]
+}

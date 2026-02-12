@@ -1,0 +1,9 @@
+{
+  "name": "globalcoder-marketing",
+  "version": "1.0.0",
+  "description": "Product and brand launch toolkit with market research, positioning, go-to-market planning, and campaign execution.",
+  "author": {
+    "name": "GlobalCoder"
+  },
+  "license": "MIT"
+}
