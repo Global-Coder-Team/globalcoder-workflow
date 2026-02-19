@@ -20,16 +20,32 @@ Start by understanding the current project context, then ask questions one at a 
 - Only one question per message - if a topic needs more exploration, break it into multiple questions
 - Focus on understanding: purpose, constraints, success criteria
 
+**UI/Design exploration (UI-facing features only):**
+
+Skip this for pure backend, API, or library work. For anything with a visible interface:
+
+- First, scan the project for existing design context — CSS framework config, UI library in package.json, theme/token files, color variables, animation libraries
+- If found, present what exists and ask: follow, extend, or diverge?
+- Then explore four dimensions, one question at a time, multiple choice preferred:
+  1. **Visual feel & color** — mood, palette direction, light/dark mode
+  2. **Layout & responsive** — layout pattern, responsive priority, content hierarchy
+  3. **Component style** — UI library, icon style, density (skip if existing library dictates)
+  4. **Animation & motion** — philosophy (subtle/expressive/minimal), key interactions, reduce-motion
+- Skip questions when prior answers make them obvious
+- Design direction informs the approach options that follow
+
 **Exploring approaches:**
 - Propose 2-3 different approaches with trade-offs
 - Present options conversationally with your recommendation and reasoning
 - Lead with your recommended option and explain why
+- For UI-facing features, approaches should reflect the design direction established above
 
 **Presenting the design:**
 - Once you believe you understand what you're building, present the design
 - Break it into sections of 200-300 words
 - Ask after each section whether it looks right so far
 - Cover: architecture, components, data flow, error handling, testing
+- For UI-facing features, include a **UI Direction** section before architecture covering: visual feel, layout, components, motion, and existing context decisions
 - Be ready to go back and clarify if something doesn't make sense
 
 ## After the Design
