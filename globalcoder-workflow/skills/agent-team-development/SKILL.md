@@ -1,6 +1,6 @@
 ---
 name: agent-team-development
-description: Use when executing implementation plans with 4+ independent tasks that touch different files, where parallel execution adds value and higher token cost is acceptable
+description: Use when executing an implementation plan with four or more independent tasks touching different files, via the experimental agent-teams flag — parallel implementer teammates plus continuous async reviewers. Higher token cost; requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1.
 ---
 
 # Agent Team Development

@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Use when facing two or more independent investigations or research tasks in the current session — debugging multiple unrelated failures, exploring different solution approaches, or running parallel reads. Not for executing implementation plans (use subagent-driven-development, agent-team-development, or tmux-parallel-development for those).
 ---
 
 # Dispatching Parallel Agents

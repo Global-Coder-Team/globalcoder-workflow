@@ -91,7 +91,7 @@ git commit -m "feat: add specific feature"
 - Exact file paths always
 - Complete code in plan (not "add validation")
 - Exact commands with expected output
-- Reference relevant skills with @ syntax
+- Reference relevant skills using `globalcoder-workflow:<name>` format (do not use `@` — that force-loads files)
 - DRY, YAGNI, TDD, frequent commits
 
 ## Execution Handoff
@@ -120,7 +120,7 @@ After saving the plan, analyze the plan's tasks and offer execution choice:
 - Fresh subagent per task + code review
 
 **If Agent Team chosen:**
-- **REQUIRED SUB-SKILL:** Use agent-team-development
+- **REQUIRED SUB-SKILL:** Use globalcoder-workflow:agent-team-development
 - Stay in this session
 - Spawns agent team with parallel implementers + async reviewers
 - Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` enabled

@@ -1,6 +1,6 @@
 ---
 name: tmux-parallel-development
-description: Use when executing implementation plans with 2+ independent tasks, where you want parallel execution via tmux without requiring experimental agent teams. Two modes: fire-and-forget (claude -p) or observable autopilot (interactive claude).
+description: Use when executing an implementation plan with two or more independent tasks via tmux processes — separate claude instances per task, no inter-worker messaging, no experimental flag required. Requires tmux installed.
 ---
 
 # tmux Parallel Development

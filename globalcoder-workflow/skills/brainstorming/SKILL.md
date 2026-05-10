@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
+description: Use when starting creative work — adding features, building components, adding functionality, modifying existing behavior, or any time the user describes a new idea or capability they want to build.
 ---
 
 # Brainstorming Ideas Into Designs
@@ -54,6 +54,9 @@ Skip this for pure backend, API, or library work. For anything with a visible in
 - Write the validated design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
 - Use elements-of-style:writing-clearly-and-concisely skill if the plugin is installed (optional — skip if unavailable)
 - Commit the design document to git
+
+**UI design (if applicable):**
+- If the design involves UI/visual decisions, hand off to globalcoder-workflow:ui-design-bootstrap to codify the visual direction into a `DESIGN.md` token contract *before* component code is written. Pass along the visual decisions gathered in the UI/Design exploration phase above so they don't have to be re-elicited.
 
 **Implementation (if continuing):**
 - Ask: "Ready to set up for implementation?"
