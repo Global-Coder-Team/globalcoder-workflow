@@ -1,6 +1,6 @@
 # globalcoder-workflow Plugin Reference
 
-**Version:** 1.1.0 | **License:** MIT | **21 skills, 1 agent, 3 commands**
+**Version:** 1.2.0 | **License:** MIT | **21 skills, 1 agent, 3 commands**
 
 ## Quick Start
 
@@ -38,23 +38,30 @@ For agent team support, also add:
 
 ### Permissions
 
-Skills require explicit permission. Add to `settings.json` or `settings.local.json`:
+Each skill in this plugin requires explicit permission to invoke. Add the skills you use most to `settings.json` or `settings.local.json`. A reasonable starting set covering the core workflow:
 
 ```json
 {
   "permissions": {
     "allow": [
+      "Skill(globalcoder-workflow:using-globalcoder-workflow)",
       "Skill(globalcoder-workflow:brainstorming)",
+      "Skill(globalcoder-workflow:ui-design-bootstrap)",
       "Skill(globalcoder-workflow:writing-plans)",
+      "Skill(globalcoder-workflow:executing-plans)",
       "Skill(globalcoder-workflow:subagent-driven-development)",
+      "Skill(globalcoder-workflow:test-driven-development)",
+      "Skill(globalcoder-workflow:systematic-debugging)",
+      "Skill(globalcoder-workflow:verification-before-completion)",
+      "Skill(globalcoder-workflow:requesting-code-review)",
       "Skill(globalcoder-workflow:finishing-a-development-branch)",
-      "Skill(globalcoder-workflow:verification-before-completion)"
+      "Task(code-reviewer)"
     ]
   }
 }
 ```
 
-Add more `Skill(globalcoder-workflow:<name>)` entries as needed.
+For any of the other skills listed in the [All Skills](#all-skills) section below, use the same `Skill(globalcoder-workflow:<name>)` pattern. Slash commands (`/brainstorm`, `/write-plan`, `/execute-plan`) inherit permissions from the skills they invoke — no separate command permission needed.
 
 ---
 
