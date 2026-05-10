@@ -181,6 +181,18 @@ git worktree remove <worktree-path>
 - **Problem:** Accidentally delete work
 - **Fix:** Require typed "discard" confirmation
 
+## Common Rationalizations
+
+| Excuse | Reality |
+|---|---|
+| "Tests passed on the branch — no need to re-run after merge" | Merge can introduce new failures (conflicts, env drift, transitive deps). Verify the merged result. |
+| "User said 'we're done' — I'll just merge and skip the options menu" | The 4-option menu is the contract. "We're done" is intent, not instruction. Show the options. |
+| "Tests are flaky — I'll proceed anyway" | Flaky tests are still failing tests. Stop. Investigate or get explicit permission to proceed. |
+| "No need for typed 'discard' confirmation — user clearly wants Option 4" | The typed gate is what prevents accidental data loss. Get the typed confirmation every time. |
+| "I'll just force-push — it's faster than resolving the conflict" | Force-push is not in the skill's option set. If asked to do it, get explicit confirmation first. |
+| "The branch was clean — I can clean up the worktree even on Option 2 (PR)" | Worktree cleanup is only for Options 1 and 4. Option 2 (PR) and Option 3 keep the worktree. |
+| "Open-ended 'what's next?' is friendlier than the 4 options" | The 4 options exist because open-ended produces ambiguous next steps. Use them. |
+
 ## Red Flags
 
 **Never:**

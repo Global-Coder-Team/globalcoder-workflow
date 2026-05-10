@@ -67,6 +67,18 @@ After all tasks complete and verified:
 
 **Don't force through blockers** - stop and ask.
 
+## Common Rationalizations
+
+| Excuse | Reality |
+|---|---|
+| "The plan looks fine — I'll just start" | Critical review *before* execution catches gaps before sunk cost makes them costly to fix. Review first. |
+| "This step is obvious — I can skip the verification" | The verification is the safety net for the obvious steps too. Run it. |
+| "I'm on a roll — I'll do 6 tasks before reporting" | The 3-task batch is for review pacing, not throughput. Bigger batches mean later, harder course corrections. |
+| "I hit a blocker but I think I can work around it" | Working around blockers hides root causes. Stop, ask, get unblocked the right way. |
+| "Step 3 is ambiguous, but I'll pick what seems best" | Ambiguity is a bug in the plan. Ask, don't guess — guessing makes the plan author's intent invisible. |
+| "I don't need to reference the skill the plan mentions — I know it" | Knowing ≠ using. Plans reference skills because that skill encodes the discipline the task needs. |
+| "The plan needs an update — I'll just patch it as I go" | Stop and revisit Step 1 (review) with the partner. Silent in-place edits to the plan defeat checkpointing. |
+
 ## Remember
 - Review plan critically first
 - Follow plan steps exactly

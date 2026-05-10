@@ -89,6 +89,19 @@ You: [Fix progress indicators]
 - Review before merge
 - Review when stuck
 
+## Common Rationalizations
+
+| Excuse | Reality |
+|---|---|
+| "It's just a small change, no review needed" | Small changes ship the same bugs as large ones. Review takes minutes; debugging shipped bugs takes hours. |
+| "I already self-reviewed carefully" | Self-review and external review catch different classes of issue. The whole point is fresh eyes. |
+| "The implementing agent already verified it works" | "Works" ≠ "is correct, idiomatic, secure, and matches the plan." That's what review is for. |
+| "I'll batch up several tasks and review at the end" | Defeats "review early, review often" — issues compound across tasks and become harder to untangle. |
+| "I'm under time pressure" | The bug you ship now costs more time later. Review is the cheaper option. |
+| "The reviewer will probably just say LGTM" | If so, fine — but skipping review on that bet means you discover problems in production instead. |
+| "The reviewer's feedback is wrong, I'll just ignore it" | Push back *with technical reasoning* and code/test evidence. Silent ignore is not pushback. |
+| "Minor nits aren't worth a follow-up" | Note them. Patterns of "minor" feedback often reveal real architectural drift. |
+
 ## Red Flags
 
 **Never:**

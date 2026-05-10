@@ -191,6 +191,18 @@ Tests passing (47 tests, 0 failures)
 Ready to implement auth feature
 ```
 
+## Common Rationalizations
+
+| Excuse | Reality |
+|---|---|
+| "`.worktrees/` is hidden — git ignores hidden dirs by default" | Hidden ≠ ignored. Run `git check-ignore`. Adding contents to a non-ignored dir leaks worktree state into commits. |
+| "I'll add it to .gitignore later, after the worktree is set up" | Too late once content lands and gets committed. Add the gitignore entry *first*, commit it, then create the worktree. |
+| "Baseline tests usually pass — I'll skip and run them later" | The baseline distinguishes new bugs from pre-existing failures. Without it, every test failure later is ambiguous. |
+| "Tests are slow — I'll skip the baseline this once" | "Just this once" is how baseline gaps become permanent. Run them. |
+| "User specified the location — no need to check existing dirs" | Existing `.worktrees/` or `worktrees/` dictates project convention; ignoring it creates inconsistency. Check first. |
+| "Tests are failing for unrelated reasons — proceed anyway" | Unrelated failures are still failures. Report them and ask before proceeding. |
+| "CLAUDE.md preference is old — I'll pick a fresh location" | The CLAUDE.md is the canonical project preference. Use it; if stale, get the user to update it. |
+
 ## Red Flags
 
 **Never:**
