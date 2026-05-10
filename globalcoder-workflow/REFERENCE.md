@@ -1,6 +1,6 @@
 # globalcoder-workflow Plugin Reference
 
-**Version:** 1.1.0 | **License:** MIT | **20 skills, 1 agent, 3 commands**
+**Version:** 1.1.0 | **License:** MIT | **21 skills, 1 agent, 3 commands**
 
 ## Quick Start
 
@@ -126,6 +126,7 @@ After writing a plan, choose how to execute it:
 | Skill | When to Use |
 |-------|-------------|
 | `brainstorming` | Before any creative work — features, components, functionality, behavior changes |
+| `ui-design-bootstrap` | Starting UI/visual work — establishes a DESIGN.md design-token contract before component code |
 | `systematic-debugging` | Any bug, test failure, or unexpected behavior — before proposing fixes |
 | `writing-plans` | Have a spec or requirements for a multi-step task, before touching code |
 

@@ -371,6 +371,39 @@ pptx/
 ```
 When: Reference material too large for inline
 
+## Self-Contained Format Specifications
+
+When your skill produces or consumes files in a non-trivial format, **embed the format spec inline in the SKILL.md**. Don't reference external specs by name only, don't assume the format is in the model's training, don't link to a doc the future agent may not be able to read.
+
+**The trap:** An agent invoking your skill receives the SKILL.md content and the user's request. If your skill says "produce a file conforming to the FooReport v2 spec" without defining FooReport v2, the agent has nothing to comply with. Best case: it guesses and produces something close. Worst case: it produces something subtly wrong that downstream tools reject.
+
+**The rule:** If a future Claude reading only your SKILL.md cannot produce a conforming file, the spec isn't sufficiently embedded.
+
+```markdown
+# ❌ BAD: External reference the agent may not be able to read
+Output must conform to the StatusReport v2 spec (see docs/specs/status-v2.md).
+
+# ❌ BAD: Format named but not defined
+Generate a weekly status file in StatusReport v2 format.
+
+# ✅ GOOD: Spec embedded inline + complete example
+Generate a weekly status file with this structure:
+- YAML frontmatter with fields: week (ISO week), owner (string), blockers (list)
+- Body sections in order: ## Accomplishments, ## Plans, ## Asks
+- Filename: status-YYYY-WW-<owner>.md
+[Plus a complete example of a valid file]
+```
+
+### Two exceptions
+
+1. **Spec is too large to inline (1000+ lines).** Embed the *structural rules and gotchas* in SKILL.md, then link to the full spec for edge cases — and the linked spec must be readable from the working directory (a committed file in the repo, not a Notion page or wiki link). This is the same pattern as "Skill with Heavy Reference" above.
+
+2. **A CLI exists that emits the spec on demand.** If `mytool spec --rules` dumps the current format spec, your skill can instruct future Claude to run that command and use its output. The `@google/design.md` project does this with `npx @google/design.md spec --rules`. This is preferable to inlining when the format evolves frequently — the skill stays current automatically.
+
+### Self-test
+
+When you finish a skill, ask: "If I deleted every file in the project except this SKILL.md, could a future Claude still produce a valid output?" If no, the format dependency is external and the skill is fragile.
+
 ## The Iron Law (Same as TDD)
 
 ```

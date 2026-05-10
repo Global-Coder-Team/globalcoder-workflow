@@ -33,6 +33,7 @@ Then enable it in `~/.claude/settings.json`:
 | Skill | Description |
 |-------|-------------|
 | **brainstorming** | Explores user intent, requirements, and design before implementation |
+| **ui-design-bootstrap** | Establishes a DESIGN.md design-token contract before component code (UI/visual work) |
 | **writing-plans** | Creates detailed implementation plans from specs or requirements |
 | **executing-plans** | Executes a written plan in a separate session with review checkpoints |
 
