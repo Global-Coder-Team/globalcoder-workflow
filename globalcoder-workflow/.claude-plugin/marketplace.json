@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "GlobalCoder development workflow plugins",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "globalcoder-workflow",
       "source": "./",
-      "description": "Full development workflow with agent team support",
-      "version": "1.0.0"
+      "description": "Full development workflow with agent team support, TDD enforcement, parallel execution, and systematic debugging.",
+      "version": "1.1.0"
     }
   ]
 }

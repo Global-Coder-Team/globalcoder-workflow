@@ -213,8 +213,6 @@ globalcoder-workflow/
 │   ├── hooks.json           # Hook definitions
 │   ├── run-hook.cmd         # Cross-platform hook runner
 │   └── session-start.sh     # SessionStart hook script
-├── lib/
-│   └── skills-core.js       # Frontmatter parsing utility
 ├── skills/
 │   └── <skill-name>/
 │       ├── SKILL.md          # Skill definition (frontmatter + content)

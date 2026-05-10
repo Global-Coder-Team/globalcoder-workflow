@@ -14,8 +14,13 @@ if [ -d "$legacy_skills_dir" ]; then
     warning_message="\n\n<important-reminder>IN YOUR FIRST REPLY AFTER SEEING THIS MESSAGE YOU MUST TELL THE USER:⚠️ **WARNING:** globalcoder-workflow uses Claude Code's skills system. Custom skills in ~/.config/superpowers/skills will not be read. Move custom skills to ~/.claude/skills instead. To make this message go away, remove ~/.config/superpowers/skills</important-reminder>"
 fi
 
-# Read using-globalcoder-workflow content
-using_skill_content=$(cat "${PLUGIN_ROOT}/skills/using-globalcoder-workflow/SKILL.md" 2>&1 || echo "Error reading using-globalcoder-workflow skill")
+# Read using-globalcoder-workflow content (set -e above will fail-fast if missing)
+SKILL_FILE="${PLUGIN_ROOT}/skills/using-globalcoder-workflow/SKILL.md"
+if [ ! -f "$SKILL_FILE" ]; then
+    echo "globalcoder-workflow session-start hook: skill file not found at $SKILL_FILE" >&2
+    exit 1
+fi
+using_skill_content=$(cat "$SKILL_FILE")
 
 # Escape for JSON using bash parameter substitution
 # These are single C-level passes - orders of magnitude faster than

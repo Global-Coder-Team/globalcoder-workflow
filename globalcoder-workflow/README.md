@@ -16,7 +16,9 @@ Then enable it in `~/.claude/settings.json`:
 
 ```json
 {
-  "enabledPlugins": ["globalcoder-workflow@globalcoder-marketplace"]
+  "enabledPlugins": {
+    "globalcoder-workflow@globalcoder-marketplace": true
+  }
 }
 ```
 
@@ -112,8 +114,6 @@ globalcoder-workflow/
 │   ├── hooks.json           # Hook configuration
 │   ├── run-hook.cmd          # Windows hook runner
 │   └── session-start.sh     # Session startup hook
-├── lib/
-│   └── skills-core.js       # Shared skill utilities
 ├── skills/
 │   └── <skill-name>/
 │       └── SKILL.md          # Skill definition (frontmatter + instructions)
