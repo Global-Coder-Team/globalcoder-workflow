@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-05-13
+
+### Added
+- `project-init` skill — scaffolds six foundational MD files at repo root (`CLAUDE.md`, `memory.md`, `tech_stack.md`, `style_guide.md`, `backlog.md`, `tech_docs.md`) and locks the workflow to brainstorming-first via the CLAUDE.md template. Refuses-and-exits if any of the six already exist to prevent data loss in mature repos.
+- `/project-init` slash command — invokes the new skill.
+- `project-init` entries added to README workflow table, REFERENCE All Skills, and REFERENCE Slash Commands.
+
 ## [1.2.0] - 2026-05-10
 
 ### Added

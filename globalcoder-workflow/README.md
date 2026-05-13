@@ -34,6 +34,7 @@ Then enable it in `~/.claude/settings.json`:
 
 | Skill | Description |
 |-------|-------------|
+| **project-init** | Scaffolds CLAUDE.md + 5 context files at repo root and locks the workflow to brainstorming-first (fresh projects only) |
 | **brainstorming** | Explores user intent, requirements, and design before implementation |
 | **ui-design-bootstrap** | Establishes a DESIGN.md design-token contract before component code (UI/visual work) |
 | **writing-plans** | Creates detailed implementation plans from specs or requirements |
