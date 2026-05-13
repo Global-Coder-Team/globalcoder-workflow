@@ -47,12 +47,34 @@ This is the first command to invoke in a repo. It scaffolds six foundational mar
 
 `/project-init` adapts to the repo state:
 
-- **Empty directory** (only `.git/` present) — interviews from scratch: project name, one-line purpose, then a multi-select gate for the four optional sections (tech stack, style guide, initial backlog, tech docs). Each picked section runs a one-question-at-a-time sub-interview. Skipped fields stay as italic placeholders that prompt for later edits.
-- **Existing codebase** — scans first (`package.json`, `tsconfig.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, lockfiles, formatter/linter configs, ORM schemas, `Dockerfile`/`vercel.json`/`fly.toml`, `.github/workflows/`, `README.md`, recent commits), presents the detection summary for confirmation, then asks **only the gaps** the scan couldn't fill (typically naming conventions and starter backlog).
+- **Empty directory** (only `.git/` present) — interviews from scratch: project name, one-line purpose, then a multi-select gate for the four optional sections (tech stack, style guide, initial backlog, tech docs). Each picked section runs a one-question-at-a-time sub-interview with stack-aware recommendations (see below).
+- **Existing codebase** — scans first (`package.json`, `tsconfig.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, lockfiles, formatter/linter configs, ORM schemas, `Dockerfile`/`vercel.json`/`fly.toml`, `.github/workflows/`, `README.md`, recent commits, source-file naming patterns, env-var keys, SDK imports, TODO/FIXME comments, open GitHub issues), presents the detection summary for confirmation, then asks **only the gaps** — with the same stack-aware recommendations as a default.
 
 In both modes the skill **refuses to overwrite** any of the six target files if they already exist — no merge, no silent overwrite.
 
 After scaffolding, the skill hands off to `/brainstorm` for the first feature.
+
+### Smart defaults per section
+
+Every optional section uses the same pattern: **ask** with a concrete recommendation, **recommend** based on the stack (or project-type), **assume** from the codebase when one exists. Accepted recommendations write as concrete values in the output files — italic `_e.g., ..._` placeholders only remain for fields the user explicitly says "skip" to.
+
+| Section | What's recommended |
+|---|---|
+| `tech_stack.md` | **Cascading**: language → framework → data layer → infrastructure → tooling (one bundled question, not five). Tables cover TypeScript, JavaScript, Python, Rust, Go, Ruby. Pick TS → Hono → Postgres + Drizzle → Fly.io → pnpm + Vitest + Prettier + ESLint + tsc, etc. |
+| `style_guide.md` | Stack-aware formatter/linter, file naming, branch naming, commit format. Defaults to Conventional Commits + kebab-case for TS+Next.js, snake_case + Ruff for Python, etc. |
+| `backlog.md` | 5-item starter-task multi-select per stack (auth, DB schema, core CRUD, deploy pipeline for TS+Next.js; server scaffolding, DB, auth, logging, deploy for Go; etc.). |
+| `tech_docs.md` | Project-type-aware multi-select for **External APIs** (SaaS default: Stripe, auth, email, analytics, error tracking; marketing-site default: CMS, email, analytics, search, image CDN). Library quirks get stack-aware hints (Next.js caching, SQLAlchemy async, Prisma <5 migration drift, etc.). |
+
+### Codebase signals (existing-codebase mode)
+
+Beyond detecting the stack from manifests and configs, the scan harvests:
+
+- **Backlog candidates** — `TODO` / `FIXME` / `XXX` comments via grep; README "Roadmap" / "Future" / "Planned" sections; WIP/TODO commit subjects; open GitHub issues (when `gh` is available and authenticated)
+- **External API integrations** — SDK imports (`stripe`, `@sendgrid/mail`, `resend`, `@sentry/*`, `posthog`, `boto3`, etc.); env-var keys in `.env.example` / `.env` (often the strongest signal — `STRIPE_API_KEY`, `RESEND_API_KEY`, `SENTRY_DSN`, etc.); README integration sections
+- **Style hints** — file naming case from a 10–20 file sample; branch naming from `git branch -a`; indentation, quotes, semicolons from a representative source file
+- **Library quirks** — known-quirky pinned versions (Prisma <5 migration drift, Pydantic v1 → v2 migration, SQLAlchemy 1.x async, etc.)
+
+Detected items are presented as multi-selects for the user to confirm; gaps fall through to the stack-aware recommendations rather than blank prompts.
 
 ## Slash Commands
 
