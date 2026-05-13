@@ -1,15 +1,19 @@
 ---
 name: project-init
-description: Use when starting a new project from scratch and the foundational MD files need to be established — CLAUDE.md (workflow contract), memory.md, tech_stack.md, style_guide.md, backlog.md, tech_docs.md. Triggers on "set up a new project," "scaffold project docs," "init project context," "bootstrap project," or any time the user is in a fresh repo with no existing CLAUDE.md and needs the workflow locked.
+description: Use when establishing the foundational MD files for a project — CLAUDE.md (workflow contract), memory.md, tech_stack.md, style_guide.md, backlog.md, tech_docs.md. Works for both empty directories (interview from scratch) and existing codebases (scan first, then ask only the gaps). Triggers on "set up a new project," "scaffold project docs," "init project context," "bootstrap project," "add the workflow files to this repo."
 ---
 
 # Project Init
 
 ## Overview
 
-**A new project starts with a workflow contract, not a hero component.**
+**A project starts with a workflow contract, not a hero component.**
 
 Without an upfront workflow lock, projects drift into ad-hoc patterns: features get coded before they're designed, decisions get lost between sessions, the tech stack lives only in `package.json`, style is enforced inconsistently. This skill writes six foundational markdown files at repo root that prevent the drift, and locks the development workflow to brainstorming-first via the CLAUDE.md it produces.
+
+The skill handles two scenarios:
+- **Empty directory** — interviews from scratch (project name, purpose, optional sections one question at a time)
+- **Existing codebase** — scans the repo first, proposes detected values for the user to confirm, then asks only about the gaps
 
 | File | Purpose |
 |---|---|
@@ -65,29 +69,39 @@ This skill refuses to overwrite existing docs to prevent data loss. To proceed:
 
 Stop. Do not proceed. Do not offer to merge.
 
-### 2. Interview the user
+### 2. Detect scenario: empty directory or existing codebase
 
-Conduct a brief interview to populate the templates with **real** content the user knows now. Empty scaffolding is the fallback, not the goal — the value of this skill comes from capturing what's known at project start, before it gets forgotten.
+After confirming none of the six target files exist, check whether the repo has any other content:
+
+```bash
+# Any non-hidden files/dirs besides .git?
+ls -A | grep -v '^\.git$' | head -1
+```
+
+- **No output** → empty directory. Go to Step 3a (interview from scratch).
+- **Has content** → existing codebase. Go to Step 3b (scan first, then ask gaps).
+
+### 3a. Interview from scratch (empty directory)
+
+Conduct a brief interview to populate the templates with **real** content the user knows now. Empty scaffolding is the fallback, not the goal — the value comes from capturing what's known at project start.
 
 Follow brainstorming-style discipline:
 - **One question at a time.** Never batch questions in a single message.
 - **Prefer multiple-choice** presentation when the option space is well-known (frameworks, formatters, language). Use whatever multi-choice mechanism your environment provides (e.g., `AskUserQuestion` in Claude Code).
-- **Accept "skip" / "TBD" / "I don't know"** for any individual question — write that value as-is. The point is to capture what's known *now*, not extract perfection.
+- **Accept "skip" / "TBD" / "I don't know"** for any individual question — write that value as-is.
 
 **Required questions (always ask, in order):**
 
 1. **Project name** — one short word or kebab-case (e.g., `acme-portal`). Interpolated into `CLAUDE.md` and `memory.md`.
 2. **One-line purpose** — what does this project do, in a sentence. Goes into `CLAUDE.md`.
 
-**Optional section gate:**
-
-Ask the user which optional sections to fill in now (offer as a multi-select):
+**Optional section gate:** Ask which optional sections to fill in now (multi-select):
 - Tech stack
 - Style guide
 - Initial backlog
 - Tech docs
 
-For each section the user picks, run the sub-questions below. Sections the user skips get the empty template as-is.
+For each picked section, run the sub-questions below. Sections the user skips get the empty template as-is.
 
 **If "tech stack" picked, ask in sequence (one per turn):**
 - Primary language (with version if known, e.g., TypeScript 5.4)
@@ -108,17 +122,66 @@ For each section the user picks, run the sub-questions below. Sections the user 
 - External APIs to document upfront (name + 1-line context for each)
 - Known library quirks or version-pin constraints
 
-### 3. Write all six files
+### 3b. Scan-and-confirm (existing codebase)
+
+Don't ask the user questions you can answer by reading the repo. Scan first, propose detected values, then ask only about the gaps.
+
+**Read these sources (whichever exist) and extract what you can:**
+
+| Source | Fields it informs |
+|---|---|
+| `package.json` | Project name (`name` field), language (Node/TS), framework (from deps: next, remix, express, fastify, vite, etc.), test runner (vitest, jest, mocha), package manager (from `packageManager` or lockfile), ORM (prisma, drizzle, kysely), formatter (prettier dep), linter (eslint, biome) |
+| `tsconfig.json` | TypeScript usage + version (from `typescript` dep) |
+| `pyproject.toml`, `requirements.txt`, `Pipfile`, `setup.py` | Python version, framework (fastapi, django, flask), tooling (ruff, black, mypy, pytest), dependencies |
+| `Cargo.toml` | Rust + framework (axum, actix), dependencies |
+| `go.mod` | Go version, module path, dependencies |
+| `Gemfile`, `*.gemspec` | Ruby + framework (rails, sinatra) |
+| `.prettierrc*`, `.eslintrc*`, `biome.json`, `ruff.toml`, `.rubocop.yml`, `.editorconfig` | Formatter, linter rules |
+| `prisma/schema.prisma`, `drizzle.config.*`, `alembic.ini`, `schema.rb` | Data layer + ORM |
+| `Dockerfile`, `docker-compose.*`, `fly.toml`, `vercel.json`, `wrangler.toml`, `netlify.toml`, `railway.json` | Infra / hosting |
+| `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml` | CI / build / test commands |
+| `README.md` | Project purpose (extract title and first paragraph) |
+| `git log -20 --pretty=format:'%s'` | Commit convention (Conventional Commits if prefixes like `feat:` / `fix:` dominate) |
+| Directory listing (`ls`, `tree -L 2`) | Repo layout hints |
+
+**Present the detection summary to the user, then ask for confirmation in one turn:**
+
+```
+I scanned the codebase. Here's what I detected:
+
+  Project name:    invoice-pilot (from package.json)
+  Purpose:         <from README.md title/first paragraph, or "(not detected)">
+  Language:        TypeScript 5.4
+  Framework:       Next.js 14.2.3
+  Data layer:      Prisma + PostgreSQL
+  Infrastructure:  Vercel (vercel.json present)
+  Tooling:         pnpm, Vitest, Prettier, ESLint
+  Commit format:   Conventional Commits (detected from recent commits)
+
+Confirm all, or list corrections (e.g., "data layer is actually Drizzle, infra is Fly.io").
+```
+
+After confirmation, ask **only the gaps** — the fields the scan couldn't determine. Common gaps:
+
+- **Purpose** (if no README.md or README has no clear purpose line) — ask "One-line purpose?"
+- **Project name** (if no `package.json` / `Cargo.toml`) — ask, defaulting to the repo directory name
+- **Initial backlog** — ask if there are 1–3 starter tasks to record (or skip)
+- **Tech docs** — ask if there are external APIs / library quirks worth documenting up front (or skip)
+- **Style guide details** — naming conventions and branch naming aren't always in config files; ask if not already covered
+
+Use the same one-question-at-a-time discipline as Step 3a for gap questions.
+
+### 4. Write all six files
 
 Write each of the six files at repo root using the templates in the "File Templates" section below.
 
-- **Interpolation:** Replace `{PROJECT_NAME}` and `{PROJECT_PURPOSE}` with the answers from Step 2.
-- **Filled sections:** For each section the user provided answers for, replace the italic `_e.g., ..._` placeholder with their actual answer. Keep the section header.
-- **Skipped sections:** Leave the italic placeholder as-is. It serves as a prompt for the user when they come back to fill it later.
+- **Interpolation:** Replace `{PROJECT_NAME}` and `{PROJECT_PURPOSE}` with the answers / detected values.
+- **Filled sections:** Replace each italic `_e.g., ..._` placeholder with the actual value (from scan or user answer). Keep the section header.
+- **Skipped / undetected sections:** Leave the italic placeholder as-is. It serves as a prompt for the user when they come back to fill it later.
 
 Write all six files — never skip a file because "the user didn't fill it in." The empty template is still the scaffolding.
 
-### 4. Report and hand off
+### 5. Report and hand off
 
 ```
 Scaffolded 6 docs at repo root:
@@ -140,6 +203,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 |---|---|
 | "Just write the templates — interview is overkill for the user" | The point of the skill is to capture what's known *now*. Empty templates with "_e.g., ..._" placeholders are the fallback for what the user explicitly skips, not the default for everything. |
 | "I'll batch all the interview questions in one message" | One question at a time. Batching mixes signals and produces sloppier answers. |
+| "Repo has files — I'll skip the scan and just interview the user" | If `package.json` exists, asking the user "what's your framework?" wastes their time. Scan first; ask only the gaps. |
+| "Scan is good enough — I'll write everything without confirming" | Detection is heuristic and can be wrong (e.g., Prisma listed as devDep that's been replaced by Drizzle). Always show the detection summary and let the user correct before writing. |
 | "Most of these files will be empty — I'll skip the empty ones" | Empty templates with headers ARE the scaffolding. They prompt the right entries when info arrives. Skip = friction later. |
 | "CLAUDE.md exists from `/init` — I'll just add the other 5" | Mixed states cause confusion. Refuse, tell the user to delete the existing CLAUDE.md, then re-run. |
 | "User said 'set up docs' — README.md + CONTRIBUTING.md is enough" | The six files have specific roles. README.md is for humans browsing the repo; these six are for Claude's working context. Don't substitute. |
@@ -149,7 +214,9 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 
 ## Red Flags — STOP
 
-- About to write any of the six files before completing the interview → STOP. Interview first.
+- About to write any of the six files before completing the interview or scan-confirm → STOP. Gather first.
+- About to ask the user questions about an existing codebase without scanning it first → STOP. Scan, then ask only the gaps.
+- About to write files from a scan without confirming with the user → STOP. Always show detected values for confirmation.
 - About to ask multiple interview questions in a single message → STOP. One at a time.
 - About to write `CLAUDE.md` and it already exists → STOP. Refuse and exit.
 - About to skip one of the six files because "it's not relevant yet" → STOP. Write the empty template.

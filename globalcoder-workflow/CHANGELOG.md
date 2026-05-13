@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-05-13
+
+### Added
+- `project-init` now handles existing codebases via a scan-and-confirm path. Reads `package.json`, `tsconfig.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, lockfiles, formatter/linter configs, ORM/DB schemas, infra files (`vercel.json`, `fly.toml`, `Dockerfile`), CI workflows, README.md, and recent commit history; proposes detected values for the user to confirm; then asks only the actual gaps. The empty-directory interview path from 1.3.1 is preserved.
+- Red flags expanded: refuses to ask questions before scanning an existing codebase, refuses to write from a scan without user confirmation.
+
 ## [1.3.1] - 2026-05-13
 
 ### Changed

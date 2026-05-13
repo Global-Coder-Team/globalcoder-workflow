@@ -1,6 +1,6 @@
 # globalcoder-workflow Plugin Reference
 
-**Version:** 1.3.1 | **License:** MIT | **22 skills, 1 agent, 4 commands**
+**Version:** 1.4.0 | **License:** MIT | **22 skills, 1 agent, 4 commands**
 
 ## Quick Start
 
@@ -133,7 +133,7 @@ After writing a plan, choose how to execute it:
 
 | Skill | When to Use |
 |-------|-------------|
-| `project-init` | Starting a fresh project — scaffolds CLAUDE.md + 5 context files at root and locks workflow to brainstorming-first |
+| `project-init` | Establishing CLAUDE.md + 5 context files at root and locking workflow to brainstorming-first; interviews on empty dirs, scans + asks gaps on existing codebases |
 | `brainstorming` | Before any creative work — features, components, functionality, behavior changes |
 | `ui-design-bootstrap` | Starting UI/visual work — establishes a DESIGN.md design-token contract before component code |
 | `systematic-debugging` | Any bug, test failure, or unexpected behavior — before proposing fixes |
