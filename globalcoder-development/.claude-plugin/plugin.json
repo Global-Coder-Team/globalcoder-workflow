@@ -1,0 +1,9 @@
+{
+  "name": "globalcoder-development",
+  "version": "2.0.0",
+  "description": "Full development workflow with agent team support, TDD enforcement, parallel execution, and systematic debugging.",
+  "author": {
+    "name": "GlobalCoder"
+  },
+  "license": "MIT"
+}
