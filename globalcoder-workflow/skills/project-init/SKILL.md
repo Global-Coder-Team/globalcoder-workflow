@@ -187,8 +187,26 @@ Use the Stack Recommendations table (below) to pick the default per question:
 5. **Patterns to follow** — if a stack was chosen, offer stack-specific suggestions to seed (e.g., for Next.js: "Server Components by default, Server Actions for mutations, route handlers in `app/api/`"). For unknown stack, ask the user or skip.
 6. **Patterns to avoid** — same: stack-specific anti-patterns if known (e.g., for Next.js: "no client-side state for server data, no `useEffect` for data fetching"). Otherwise ask or skip.
 
-**If "initial backlog" picked, ask:**
-- 1–3 starter tasks to put under "Next Up"
+**If "initial backlog" picked**, do not ask open-ended. Offer **stack-aware starter tasks** as a multi-select first, then collect any custom additions. Format the multi-select as:
+
+> "Common starter tasks for {stack}: \n  a) ... \n  b) ... \n  c) ... \n  d) ... \n  e) ...\nPick any to seed under 'Next Up' (multi-select). Add custom items after, or 'skip all'."
+
+Use the table below to pick the candidate set:
+
+| Stack | Recommended starter tasks (5 candidates) |
+|---|---|
+| TypeScript + Next.js / Remix | Auth (NextAuth/Clerk); DB schema + migrations (Prisma/Drizzle); Core data-model CRUD; First end-to-end feature; Deploy pipeline |
+| TypeScript + Node API | API scaffolding + first endpoint; DB schema + migrations; Auth middleware; Error handling + logging; Deploy + smoke test |
+| Python + FastAPI | Auth (JWT/OAuth2); DB models + Alembic; Core resource CRUD; Background tasks (Celery/arq); Deploy + healthcheck |
+| Python + Django | User model + auth; First app + model; Admin panel; First public view; Deploy + collectstatic |
+| Rust + Axum | Server scaffolding + first route; DB + sqlx setup; Core handler + types; Error handling + tracing; Deploy |
+| Go | Server scaffolding + first route; DB + migrations; Auth middleware; Logging + observability; Deploy |
+| Ruby + Rails | Auth (Devise or custom); First resource (model+controller+views); Background jobs (Sidekiq); Test scaffolding; Deploy |
+| (no stack chosen) | Set up CI; Pre-commit formatter+linter hook; First integration test; Deploy preview env; README usage docs |
+
+After the user picks (or skips), ask **one** follow-up: "Any custom starter tasks to add? (1–3, or 'skip')."
+
+Write the combined selection (picked + custom) under "Next Up" in `backlog.md`. Leave "In Progress" and "Done" as italic placeholders — those fill in naturally as work proceeds.
 
 **If "tech docs" picked, ask:**
 - External APIs to document upfront (name + 1-line context for each)
@@ -212,6 +230,10 @@ Don't ask the user questions you can answer by reading the repo. Scan first, pro
 | Sample of 10–20 source files (e.g., `find src -type f \| head -20`) | **File naming convention** — infer dominant case (kebab, camel, snake, Pascal) by inspecting actual filenames |
 | One or two representative source files (read full content) | **Code style hints** — indentation (tabs vs spaces, 2 vs 4), trailing semicolons (TS), single/double quotes, brace style |
 | `git branch -a \| head -20` | **Branch naming convention** — infer prefix pattern (`feature/`, `fix/`, etc.) from existing branches |
+| `grep -rn 'TODO\\|FIXME\\|XXX' --include='*.{ts,tsx,js,py,rs,go,rb,md}' . \| head -20` | **Backlog candidates** — pending work the team has flagged inline |
+| README.md "TODO", "Roadmap", "Future", "Planned" sections | **Backlog candidates** from explicit roadmap text |
+| `git log --oneline -30 \| grep -iE 'wip\|todo'` | **Backlog candidates** from WIP/TODO commit subjects |
+| `gh issue list --limit 20` (if `gh` is available and authenticated) | **Backlog candidates** from open GitHub issues |
 | `prisma/schema.prisma`, `drizzle.config.*`, `alembic.ini`, `schema.rb` | Data layer + ORM |
 | `Dockerfile`, `docker-compose.*`, `fly.toml`, `vercel.json`, `wrangler.toml`, `netlify.toml`, `railway.json` | Infra / hosting |
 | `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml` | CI / build / test commands |
@@ -244,6 +266,7 @@ After confirmation, ask **only the gaps** — the fields the scan couldn't deter
 - **Tech docs** — ask if there are external APIs / library quirks worth documenting up front (or skip)
 - **Style guide gaps** — when naming convention or branch naming is ambiguous (mixed signals in the repo) or absent (only one branch, no source files yet), ask **with a recommendation** from the Stack Recommendations table — don't leave it open-ended.
 - **Tech stack gaps** — when the scan detects the language but not the framework / data layer / hosting (rare but happens in monorepo subdirs or pre-deployment repos), use the **cascading recommendations** from Step 3a's tech-stack tables. Format: "I couldn't detect your hosting. Recommended for {detected stack}: {X}. Accept, customize, or skip."
+- **Backlog seeding** — when the scan turned up TODO/FIXME comments, README roadmap items, WIP commits, or open issues, present them as a multi-select: "Found {N} candidate backlog items in this repo. Pick which to seed under 'Next Up' (multi-select), or 'skip all'." If the scan found nothing, fall back to stack-aware starter tasks (see Step 3a backlog table).
 - **Patterns to follow / avoid** — these almost never come from a scan. Offer stack-specific recommendations (see Step 3a) and let the user accept/customize/skip.
 
 Use the same one-question-at-a-time discipline as Step 3a for gap questions, and the same "Recommended: X. Accept, customize, or skip." format so the user always has a default to fall back on.
@@ -287,6 +310,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 | "There's no clear best practice — I'll ask open-ended" | Open-ended questions force the user to invent answers under pressure. Propose a recommendation; let them override if they have one. The recommendation tables cover the common cases for both style and tech-stack questions. |
 | "I asked the language; now I'll ask the framework open-ended" | Recommendations *cascade*. Once the language is known, the framework / data layer / hosting / tooling recommendations narrow accordingly. Use them. |
 | "Let me ask separately about package manager, test runner, formatter, linter, type-checker" | One question for the tooling bundle, not five. Decision fatigue erodes the value of every additional prompt. |
+| "Backlog is the user's job — I'll just leave it empty" | For an existing codebase, scan TODOs / FIXMEs / README roadmaps / open issues — that's the user's existing backlog the project just hasn't surfaced yet. For empty dirs, offer stack-aware starter tasks. Empty backlog is the last resort. |
+| "Asking open-ended 'what are your starter tasks?' is fine" | Open-ended invites blank-page paralysis. Offer the stack's recommended starter set as multi-select; let the user pick a subset, then optionally add custom items. |
 | "Most of these files will be empty — I'll skip the empty ones" | Empty templates with headers ARE the scaffolding. They prompt the right entries when info arrives. Skip = friction later. |
 | "CLAUDE.md exists from `/init` — I'll just add the other 5" | Mixed states cause confusion. Refuse, tell the user to delete the existing CLAUDE.md, then re-run. |
 | "User said 'set up docs' — README.md + CONTRIBUTING.md is enough" | The six files have specific roles. README.md is for humans browsing the repo; these six are for Claude's working context. Don't substitute. |
@@ -308,6 +333,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 - About to ask a style-guide or tech-stack question without a recommended default → STOP. Use the recommendation tables (Step 3a) or generic best-practice defaults if no stack is yet known.
 - About to leave a `style_guide.md` or `tech_stack.md` section empty when the user accepted the recommendation → STOP. Write the recommended value as the actual content.
 - About to ask a tech-stack question without cascading from the previous answer → STOP. Each question's recommendation depends on the language (and framework) already chosen — narrow accordingly.
+- About to ask "what are your starter tasks?" open-ended → STOP. Offer the stack's recommended starter set as multi-select; collect custom additions in a follow-up.
+- About to skip the backlog scan in an existing codebase → STOP. TODOs, FIXMEs, README roadmaps, and open issues are the user's existing backlog — surface them.
 
 ## File Templates
 

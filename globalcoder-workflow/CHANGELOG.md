@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-05-13
+
+### Changed
+- `project-init` backlog interview no longer asks open-ended "what are your starter tasks?". Empty-directory mode offers a **stack-aware multi-select** of recommended starter tasks (e.g., for TS+Next.js: auth, DB schema, core CRUD, first e2e feature, deploy pipeline; for Go: server scaffolding, DB, auth middleware, logging, deploy). User picks any subset, then adds custom items in one follow-up.
+- Scan mode now harvests backlog candidates from the codebase: `TODO`/`FIXME`/`XXX` comments via grep, README "Roadmap"/"Future"/"Planned" sections, WIP/TODO commit subjects, and open GitHub issues (when `gh` is available). Findings are presented as a single multi-select grouped by source; the user picks which to seed under "Next Up". Falls back to stack-aware starter tasks only when the scan returns nothing.
+- Provenance is preserved on imported items (file:line annotations, issue numbers, "roadmap" tags) so each task is traceable back to its origin.
+
 ## [1.6.0] - 2026-05-13
 
 ### Changed
