@@ -208,9 +208,36 @@ After the user picks (or skips), ask **one** follow-up: "Any custom starter task
 
 Write the combined selection (picked + custom) under "Next Up" in `backlog.md`. Leave "In Progress" and "Done" as italic placeholders — those fill in naturally as work proceeds.
 
-**If "tech docs" picked, ask:**
-- External APIs to document upfront (name + 1-line context for each)
-- Known library quirks or version-pin constraints
+**If "tech docs" picked**, run three sub-questions in sequence. For external APIs (Q1), present a stack-aware multi-select rather than asking open-ended. For Q2 and Q3, ask with a stack-aware *hint* of common quirks but accept open-ended answers.
+
+**1. External APIs.** Infer the project type from the user's one-line purpose (SaaS / marketing site / internal tool / API backend / CLI). Default to the SaaS list when ambiguous — it covers the broadest case.
+
+| Project type signal | Recommended API candidates |
+|---|---|
+| SaaS, subscription, marketplace, product (default) | Payment (Stripe / Paddle); Auth (NextAuth / Clerk / Auth0); Email (Resend / SendGrid / Postmark); Analytics (PostHog / Mixpanel); Error tracking (Sentry) |
+| Marketing site, blog, landing, docs | CMS (Sanity / Contentful / Hygraph); Email collection (ConvertKit / Mailchimp); Analytics (Plausible / Fathom); Search (Algolia / typesense); Image CDN (Cloudinary / Imgix) |
+| Internal tool, dashboard, admin | Auth (SSO / Okta); Telemetry source (Datadog / Grafana); Secret manager (Vault / AWS SM); Audit log destination; Database read replica |
+| Mobile API backend | Push (FCM / APNs); Object storage (S3 / R2); CDN; Auth provider; Crash reporting (Sentry / Bugsnag) |
+| DevOps / CLI tool | Cloud SDK (AWS / GCP / Azure); GitHub API; OpenTelemetry; Update checker; Telemetry endpoint |
+
+Prompt: "Common external APIs for {project type}: a)... b)... c)... d)... e)... Pick which you're planning to use (multi-select), plus any custom APIs (name + 1-line context per custom). Or 'skip'."
+
+**2. Library quirks.** Ask with stack-aware examples to prime the user's memory; accept open-ended.
+
+Hint examples to surface (pick the one matching the user's stack):
+- TS + Next.js: App Router caching behavior, Server Actions error handling, Edge runtime limits
+- TS + Prisma: migration drift between dev/prod, JSON field types, transaction batching
+- Python + SQLAlchemy: async session management, eager vs lazy loading in async contexts
+- Python + Pydantic: v1 → v2 migration gotchas, model_config quirks
+- Rust + sqlx: compile-time query checking, offline mode for CI
+- Go: context cancellation, goroutine leaks
+- Ruby + Rails: ActiveRecord N+1, callback ordering
+
+Prompt: "Any known library quirks worth flagging upfront? Common for {stack}: {1-3 hints from above}. List any (description + 1-line context per item), or 'skip'."
+
+**3. Complex internal logic.** Usually empty at init.
+
+Prompt: "Any non-obvious internal logic to document upfront — algorithms, multi-step flows, invariants? (Most projects skip at init and fill in as it arises.) List any, or 'skip'."
 
 ### 3b. Scan-and-confirm (existing codebase)
 
@@ -234,6 +261,10 @@ Don't ask the user questions you can answer by reading the repo. Scan first, pro
 | README.md "TODO", "Roadmap", "Future", "Planned" sections | **Backlog candidates** from explicit roadmap text |
 | `git log --oneline -30 \| grep -iE 'wip\|todo'` | **Backlog candidates** from WIP/TODO commit subjects |
 | `gh issue list --limit 20` (if `gh` is available and authenticated) | **Backlog candidates** from open GitHub issues |
+| Imports of known service SDKs (`stripe`, `@sendgrid/mail`, `resend`, `@aws-sdk/*`, `posthog`, `@sentry/*`, `boto3`, etc.) | **External APIs in use** — for tech_docs External APIs section |
+| Env var keys in `.env.example` / `.env` (e.g., `STRIPE_API_KEY`, `RESEND_API_KEY`, `AWS_REGION`, `SENTRY_DSN`) | **External APIs in use** (often the most reliable signal) |
+| README "Integrations", "Dependencies", "External Services" sections | **External APIs in use** from explicit docs |
+| Known-quirky library versions in lockfiles / manifests (e.g., Prisma <5, Pydantic v1, SQLAlchemy 1.x) | **Library constraints** worth flagging upfront |
 | `prisma/schema.prisma`, `drizzle.config.*`, `alembic.ini`, `schema.rb` | Data layer + ORM |
 | `Dockerfile`, `docker-compose.*`, `fly.toml`, `vercel.json`, `wrangler.toml`, `netlify.toml`, `railway.json` | Infra / hosting |
 | `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml` | CI / build / test commands |
@@ -267,6 +298,7 @@ After confirmation, ask **only the gaps** — the fields the scan couldn't deter
 - **Style guide gaps** — when naming convention or branch naming is ambiguous (mixed signals in the repo) or absent (only one branch, no source files yet), ask **with a recommendation** from the Stack Recommendations table — don't leave it open-ended.
 - **Tech stack gaps** — when the scan detects the language but not the framework / data layer / hosting (rare but happens in monorepo subdirs or pre-deployment repos), use the **cascading recommendations** from Step 3a's tech-stack tables. Format: "I couldn't detect your hosting. Recommended for {detected stack}: {X}. Accept, customize, or skip."
 - **Backlog seeding** — when the scan turned up TODO/FIXME comments, README roadmap items, WIP commits, or open issues, present them as a multi-select: "Found {N} candidate backlog items in this repo. Pick which to seed under 'Next Up' (multi-select), or 'skip all'." If the scan found nothing, fall back to stack-aware starter tasks (see Step 3a backlog table).
+- **Tech docs seeding** — when the scan detected SDK imports or env vars pointing at external services, present them as a multi-select: "Detected integrations: Stripe, Resend, Sentry. Pick which to document under External APIs (multi-select), or 'skip all'." If nothing detected, fall back to the stack-aware External API recommendations (see Step 3a tech-docs table). For library constraints, surface any known-quirky pinned versions with a brief note for the user to expand on.
 - **Patterns to follow / avoid** — these almost never come from a scan. Offer stack-specific recommendations (see Step 3a) and let the user accept/customize/skip.
 
 Use the same one-question-at-a-time discipline as Step 3a for gap questions, and the same "Recommended: X. Accept, customize, or skip." format so the user always has a default to fall back on.
@@ -312,6 +344,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 | "Let me ask separately about package manager, test runner, formatter, linter, type-checker" | One question for the tooling bundle, not five. Decision fatigue erodes the value of every additional prompt. |
 | "Backlog is the user's job — I'll just leave it empty" | For an existing codebase, scan TODOs / FIXMEs / README roadmaps / open issues — that's the user's existing backlog the project just hasn't surfaced yet. For empty dirs, offer stack-aware starter tasks. Empty backlog is the last resort. |
 | "Asking open-ended 'what are your starter tasks?' is fine" | Open-ended invites blank-page paralysis. Offer the stack's recommended starter set as multi-select; let the user pick a subset, then optionally add custom items. |
+| "External APIs are too project-specific to recommend" | They're more predictable than they seem. SaaS projects almost always need payment + auth + email + analytics + error tracking. Offer the common set as multi-select; let the user pick what applies and add custom. |
+| "I scanned the repo and found a `STRIPE_API_KEY` env var — but I won't surface it as a tech-docs candidate" | Env vars naming external services are one of the strongest signals there is. Surface them as candidates. |
 | "Most of these files will be empty — I'll skip the empty ones" | Empty templates with headers ARE the scaffolding. They prompt the right entries when info arrives. Skip = friction later. |
 | "CLAUDE.md exists from `/init` — I'll just add the other 5" | Mixed states cause confusion. Refuse, tell the user to delete the existing CLAUDE.md, then re-run. |
 | "User said 'set up docs' — README.md + CONTRIBUTING.md is enough" | The six files have specific roles. README.md is for humans browsing the repo; these six are for Claude's working context. Don't substitute. |
@@ -335,6 +369,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 - About to ask a tech-stack question without cascading from the previous answer → STOP. Each question's recommendation depends on the language (and framework) already chosen — narrow accordingly.
 - About to ask "what are your starter tasks?" open-ended → STOP. Offer the stack's recommended starter set as multi-select; collect custom additions in a follow-up.
 - About to skip the backlog scan in an existing codebase → STOP. TODOs, FIXMEs, README roadmaps, and open issues are the user's existing backlog — surface them.
+- About to ask "what external APIs do you use?" open-ended → STOP. Offer the project-type recommended set (or scan-detected SDKs/env vars) as multi-select.
+- About to ignore a `STRIPE_API_KEY` / `RESEND_API_KEY` / `SENTRY_DSN` style env var while building tech_docs candidates → STOP. Surface every detected service.
 
 ## File Templates
 

@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-05-13
+
+### Changed
+- `project-init` tech-docs interview now uses the same ask + recommend + assume pattern as style_guide (1.5.0), tech_stack (1.6.0), and backlog (1.7.0). External APIs question presents a project-type-aware multi-select (SaaS / marketing site / internal tool / mobile-API / DevOps-CLI variants) instead of open-ended; default is the SaaS set (Stripe, auth provider, email, analytics, error tracking) which covers the broadest case. Library quirks question surfaces stack-aware hints (Next.js App Router caching, SQLAlchemy async sessions, Prisma <5 migration drift, etc.) to prime the user's memory; still accepts open-ended.
+- Scan mode now harvests external-API candidates from SDK imports (`stripe`, `@sendgrid/mail`, `resend`, `@aws-sdk/*`, `posthog`, `@sentry/*`, `boto3`, etc.), env-var keys in `.env.example` / `.env` (often the strongest signal — `STRIPE_API_KEY`, `RESEND_API_KEY`, `SENTRY_DSN`, etc.), and README "Integrations" / "Dependencies" sections. Reconciles imports + env vars by service with confidence weighting; surfaces env-only signals (e.g., `NEXTAUTH_SECRET` without an SDK import) as candidates rather than dropping them.
+- Scan also flags known-quirky pinned versions (Prisma <5, Pydantic v1, SQLAlchemy 1.x) as library-constraint candidates with brief notes for the user to expand on.
+
 ## [1.7.0] - 2026-05-13
 
 ### Changed
