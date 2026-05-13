@@ -664,6 +664,12 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 **Deployment:**
 - [ ] Commit skill to git and push to your fork (if configured)
 - [ ] Consider contributing back via PR (if broadly useful)
+- [ ] **Update indexes** (this is the step that drifts most — fix immediately, not "later"):
+  - `REFERENCE.md` — bump the skill count in the header (e.g., "22 skills" → "23 skills"); add a row in the "All Skills" section under the appropriate category; add a row to "Skill Discipline Types" classifying the new skill as Rigid or Flexible
+  - `README.md` — add a row in the appropriate Skills sub-table (Workflow, Execution Strategies, Quality & Testing, Debugging & Performance, Code Changes, Git & Environment, or Meta)
+  - If a new slash command was added, also update REFERENCE.md "Slash Commands" and README.md "Slash Commands" tables
+  - If the skill is for a fresh-project workflow (like `project-init`), update `commands/` and the README "Getting Started" section
+- [ ] Update `CHANGELOG.md` with an entry under "Added" or "Changed"
 
 ## Discovery Workflow
 

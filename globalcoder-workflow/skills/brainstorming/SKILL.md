@@ -14,7 +14,14 @@ Start by understanding the current project context, then ask questions one at a 
 ## The Process
 
 **Understanding the idea:**
-- Check out the current project state first (files, docs, recent commits)
+- Check the current project state first. If the repo has the project-init files at root, read them — they're the canonical source of context:
+  - `CLAUDE.md` — workflow contract and project overview
+  - `memory.md` — active work, key decisions, things to remember across sessions
+  - `tech_stack.md` — frameworks, data, infra, tooling (shapes which approaches are realistic)
+  - `style_guide.md` — conventions the design must respect
+  - `backlog.md` — is this idea already in "Next Up" or "Later"? Move it forward or note it as a new item
+  - `tech_docs.md` — external APIs and library constraints relevant to this work
+- If the files don't exist, fall back to a quick scan of files, docs, and recent commits.
 - Ask questions one at a time to refine the idea
 - Prefer multiple choice questions when possible, but open-ended is fine too
 - Only one question per message - if a topic needs more exploration, break it into multiple questions

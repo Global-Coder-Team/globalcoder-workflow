@@ -84,6 +84,8 @@ Detected items are presented as multi-selects for the user to confirm; gaps fall
 | `/brainstorm` | Explore intent, requirements, design before writing code |
 | `/write-plan` | Convert a design into a bite-sized implementation plan |
 | `/execute-plan` | Execute a plan in batches with review checkpoints |
+| `/review` | Request a code review of recent changes via the code-reviewer agent |
+| `/finish-branch` | Verify, present merge / PR / keep / discard, update tracking files, cleanup |
 
 ## Skills
 
@@ -148,6 +150,7 @@ Detected items are presented as multi-selects for the user to confirm; gaps fall
 | Skill | Description |
 |-------|-------------|
 | **writing-skills** | Guides creating, editing, and testing new skills |
+| **preparing-a-release** | Coordinates version bump across manifests, CHANGELOG entry, annotated tag, and push |
 
 ## Recommended Workflow
 

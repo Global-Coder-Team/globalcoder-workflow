@@ -1,6 +1,6 @@
 {
   "name": "globalcoder-workflow",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Full development workflow with agent team support, TDD enforcement, parallel execution, and systematic debugging.",
   "author": {
     "name": "GlobalCoder"

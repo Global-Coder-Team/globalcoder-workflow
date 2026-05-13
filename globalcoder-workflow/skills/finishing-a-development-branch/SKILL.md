@@ -138,7 +138,25 @@ git branch -D <feature-branch>
 
 Then: Cleanup worktree (Step 5)
 
-### Step 5: Cleanup Worktree
+### Step 5: Update Tracking Files
+
+Before cleanup, update the project-init tracking files (if they exist at repo root) to close the loop. Show the proposed diff before writing.
+
+**For Options 1 (merge) and 2 (PR):**
+
+- **`backlog.md`** — Move the completed work item from "In Progress" → "Done". If the item wasn't pre-listed in the backlog, ask the user for a one-line description and append it directly to "Done".
+- **`memory.md`** — If the work introduced an architectural decision, a non-obvious convention, or pitfall worth remembering, append a one-line entry under "Key Decisions" or "To Remember Across Sessions". Ask the user "Anything from this work worth recording in memory.md?" — accept "skip" for routine work.
+
+**For Option 4 (discard):**
+
+- **`backlog.md`** — If the item was in "In Progress", move it back to "Next Up" (or remove it, depending on whether the user wants to retry). Ask first.
+- **`memory.md`** — If the discard revealed a dead-end approach worth not repeating, append a one-line entry under "To Remember Across Sessions".
+
+**For Option 3 (keep as-is):** Skip this step; no completion event yet.
+
+If the project doesn't have the project-init files, skip this step silently. Don't prompt to run `project-init` mid-finish.
+
+### Step 6: Cleanup Worktree
 
 **For Options 1, 2, 4:**
 

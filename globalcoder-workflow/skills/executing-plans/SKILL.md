@@ -34,6 +34,7 @@ For each task:
 When batch complete:
 - Show what was implemented
 - Show verification output
+- If any dependency manifest was modified in this batch (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `Gemfile`), prompt: "New dependency added — update `tech_stack.md` to reflect it?" Accept "skip" for incidental dev-only additions.
 - Say: "Ready for feedback."
 
 ### Step 4: Continue

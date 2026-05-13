@@ -189,14 +189,20 @@ You MUST complete each phase before proceeding to the next.
    - No other tests broken?
    - Issue actually resolved?
 
-4. **If Fix Doesn't Work**
+4. **Capture Institutional Knowledge** (after a successful fix)
+   - If the root cause was non-obvious — wrong about an assumption, surprising library behavior, subtle interaction between two components — propose a one-line entry for `memory.md` under "To Remember Across Sessions" so the team doesn't rediscover it.
+   - Format: "When X, Y because Z." Concrete, short, future-self readable.
+   - Ask the user "Worth a memory.md entry? Proposed: '...'" — accept "skip" for routine fixes.
+   - Skip this step if no `memory.md` exists at repo root.
+
+5. **If Fix Doesn't Work**
    - STOP
    - Count: How many fixes have you tried?
    - If < 3: Return to Phase 1, re-analyze with new information
    - **If ≥ 3: STOP and question the architecture (step 5 below)**
    - DON'T attempt Fix #4 without architectural discussion
 
-5. **If 3+ Fixes Failed: Question Architecture**
+6. **If 3+ Fixes Failed: Question Architecture**
 
    **Pattern indicating architectural problem:**
    - Each fix reveals new shared state/coupling/problem in different place

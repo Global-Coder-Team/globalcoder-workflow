@@ -190,6 +190,9 @@ Done!
 - Spec compliance prevents over/under-building
 - Code quality ensures implementation is well-built
 
+**Tracking-file updates:**
+- After each task, if the implementer modified a dependency manifest (`package.json`, `pyproject.toml`, `Cargo.toml`, etc.), prompt the user before marking the task complete: "New dependency added — update `tech_stack.md`?" Accept "skip" for incidental dev-only additions. This prevents `tech_stack.md` from drifting silently across a long plan.
+
 **Cost:**
 - More subagent invocations (implementer + 2 reviewers per task)
 - Controller does more prep work (extracting all tasks upfront)

@@ -1,6 +1,6 @@
 # globalcoder-workflow Plugin Reference
 
-**Version:** 1.8.0 | **License:** MIT | **22 skills, 1 agent, 4 commands**
+**Version:** 1.9.0 | **License:** MIT | **23 skills, 1 agent, 6 commands**
 
 ## Quick Start
 
@@ -86,10 +86,12 @@ These are shortcuts that trigger the corresponding skill:
 
 | Command | Triggers Skill | Purpose |
 |---------|---------------|---------|
-| `/project-init` | project-init | Scaffold foundational MD files + lock workflow (fresh projects) |
+| `/project-init` | project-init | Scaffold foundational MD files + lock workflow (run first in any repo) |
 | `/brainstorm` | brainstorming | Explore idea before implementation |
 | `/write-plan` | writing-plans | Create implementation plan |
 | `/execute-plan` | executing-plans | Execute plan in batches with checkpoints |
+| `/review` | requesting-code-review | Request code review via the code-reviewer agent |
+| `/finish-branch` | finishing-a-development-branch | Verify, choose merge/PR/keep/discard, update tracking, cleanup |
 
 ---
 
@@ -169,6 +171,7 @@ After writing a plan, choose how to execute it:
 | `using-git-worktrees` | Starting feature work needing isolation, or before executing plans |
 | `finishing-a-development-branch` | Implementation complete, all tests pass — decide how to integrate |
 | `writing-skills` | Creating new skills, editing existing skills, or verifying skills work |
+| `preparing-a-release` | Shipping a release — version bump across all manifests, CHANGELOG, tag, push |
 | `using-globalcoder-workflow` | Auto-loaded on session start — establishes how to find and use skills |
 
 ---
@@ -186,16 +189,31 @@ After writing a plan, choose how to execute it:
 Skills follow one of two discipline models:
 
 **Rigid** (hard gates, mandatory checkpoints — follow exactly):
-- test-driven-development
-- refactoring
+- agent-team-development
 - database-migration
+- executing-plans
+- finishing-a-development-branch
+- preparing-a-release
+- project-init
+- refactoring
+- requesting-code-review
+- subagent-driven-development
 - systematic-debugging
+- test-driven-development
+- tmux-parallel-development
+- ui-design-bootstrap
+- using-git-worktrees
 - verification-before-completion
+- writing-plans
+- writing-skills
 
 **Flexible** (exploratory with firm boundary rules — adapt to context):
 - brainstorming
+- dispatching-parallel-agents
 - performance-profiling
+- receiving-code-review
 - security-review
+- using-globalcoder-workflow
 
 ---
 

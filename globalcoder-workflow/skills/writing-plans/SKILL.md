@@ -17,6 +17,16 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 
+## Step 0: Read Project Context
+
+Before writing the plan, read the project-init files at repo root if they exist — they encode constraints that should shape the plan:
+
+- **`tech_stack.md`** — Frameworks, data layer, infra, and tooling. The plan's verification commands and code patterns should match what's actually used here, not a guess. If this file says "Postgres + Drizzle", don't write a plan that uses Prisma.
+- **`style_guide.md`** — Naming, formatter/linter, commit format. The plan's tasks should follow these conventions (e.g., generate test files with the project's naming pattern).
+- **`backlog.md`** — Check whether the task being planned is already listed under "Next Up". If yes, move it to "In Progress" as part of starting the plan. If no, ask whether the task should be added to the backlog before planning continues.
+
+If none of these files exist, suggest running `globalcoder-workflow:project-init` first — it's much cheaper than writing a plan that fights the actual stack.
+
 ## Bite-Sized Task Granularity
 
 **Each step is one action (2-5 minutes):**

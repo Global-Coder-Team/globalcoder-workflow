@@ -403,6 +403,7 @@ These files live alongside this one at repo root. Read the relevant ones for the
 - **style_guide.md** — Naming, code style, patterns to follow and avoid
 - **backlog.md** — In progress, next up, later, done
 - **tech_docs.md** — External APIs, library constraints, complex logic notes
+- **DESIGN.md** *(if this project has UI)* — Design-token contract (colors, typography, spacing, components). Created by `globalcoder-workflow:ui-design-bootstrap` before any component code is written.
 
 ## When Starting Work
 

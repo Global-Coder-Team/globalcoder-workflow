@@ -2,6 +2,24 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-05-13
+
+### Added
+- **`preparing-a-release` skill** — coordinates the release ritual end-to-end: enumerates every version-bearing manifest (grep), batch-edits them to the new version, runs `git log` between tags to populate the CHANGELOG entry (no "from memory"), commits, annotates the tag, pushes with `--follow-tags`, and suggests a reinstall command. Codifies what was previously done manually six times during the v1.3.0–v1.8.0 series.
+- **`/finish-branch` slash command** — invokes `finishing-a-development-branch`. Closes the obvious gap left by the v1.2.0 audit (the other three lifecycle stages all had shortcuts).
+- **`/review` slash command** — invokes `requesting-code-review`. Useful mid-feature, not just at PR time.
+- **`Skill Discipline Types`** section in `REFERENCE.md` now classifies all 23 skills as Rigid or Flexible (was 8 of 22 — partial since the v1.2.0 audit).
+
+### Changed
+- **Cross-skill integration with `project-init` files** — the six foundational MD files are now a living spine instead of write-once artifacts:
+  - `writing-plans` adds a Step 0: read `tech_stack.md` and `style_guide.md` for constraints; check `backlog.md` for the task and move it to "In Progress" when planning begins.
+  - `finishing-a-development-branch` adds a Step 5 before worktree cleanup: prompt to move completed work to `backlog.md`'s "Done" and propose a `memory.md` entry for any architectural decision made during the work.
+  - `brainstorming` now explicitly names `memory.md`, `tech_stack.md`, `backlog.md`, etc. as canonical context sources (was a generic "check current project state").
+  - `systematic-debugging` Phase 4 adds a "Capture Institutional Knowledge" step: propose a one-line `memory.md` entry under "To Remember Across Sessions" when a non-obvious bug is resolved.
+  - `executing-plans` and `subagent-driven-development` prompt for `tech_stack.md` updates when a batch / task adds a dependency.
+  - `project-init`'s CLAUDE.md template now references `DESIGN.md` conditionally for UI projects.
+- **`writing-skills` Deployment checklist** now includes an explicit "update indexes" step (REFERENCE.md skill count, All Skills table, Skill Discipline Types row, README.md Skills sub-table, slash commands tables, CHANGELOG entry). Drift here is what caused `Skill Discipline Types` to fall out of sync since v1.2.0.
+
 ## [1.8.0] - 2026-05-13
 
 ### Changed
