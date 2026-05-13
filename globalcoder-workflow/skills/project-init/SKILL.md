@@ -44,7 +44,7 @@ The intended scenario is "fresh project, no docs yet." The corruption scenario i
 
 ### 1. Detect existing files
 
-Before writing anything, check all six target paths at repo root:
+Before asking anything or writing anything, check all six target paths at repo root:
 
 ```bash
 for f in CLAUDE.md memory.md tech_stack.md style_guide.md backlog.md tech_docs.md; do
@@ -65,13 +65,58 @@ This skill refuses to overwrite existing docs to prevent data loss. To proceed:
 
 Stop. Do not proceed. Do not offer to merge.
 
-### 2. Gather project name
+### 2. Interview the user
 
-If no project name was passed as an argument, ask: "Project name?" Use one short word or kebab-case (e.g., `acme-portal`). This is interpolated into `CLAUDE.md` and `memory.md`.
+Conduct a brief interview to populate the templates with **real** content the user knows now. Empty scaffolding is the fallback, not the goal — the value of this skill comes from capturing what's known at project start, before it gets forgotten.
+
+Follow brainstorming-style discipline:
+- **One question at a time.** Never batch questions in a single message.
+- **Prefer multiple-choice** presentation when the option space is well-known (frameworks, formatters, language). Use whatever multi-choice mechanism your environment provides (e.g., `AskUserQuestion` in Claude Code).
+- **Accept "skip" / "TBD" / "I don't know"** for any individual question — write that value as-is. The point is to capture what's known *now*, not extract perfection.
+
+**Required questions (always ask, in order):**
+
+1. **Project name** — one short word or kebab-case (e.g., `acme-portal`). Interpolated into `CLAUDE.md` and `memory.md`.
+2. **One-line purpose** — what does this project do, in a sentence. Goes into `CLAUDE.md`.
+
+**Optional section gate:**
+
+Ask the user which optional sections to fill in now (offer as a multi-select):
+- Tech stack
+- Style guide
+- Initial backlog
+- Tech docs
+
+For each section the user picks, run the sub-questions below. Sections the user skips get the empty template as-is.
+
+**If "tech stack" picked, ask in sequence (one per turn):**
+- Primary language (with version if known, e.g., TypeScript 5.4)
+- Framework, if any (Next.js, FastAPI, etc.)
+- Data layer (database, cache, object storage)
+- Infrastructure / hosting (Vercel, Fly.io, AWS, etc.)
+- Tooling (package manager, formatter, linter, test runner)
+
+**If "style guide" picked, ask in sequence:**
+- Formatter / linter preference (Prettier, Ruff, Biome, ESLint, etc.)
+- File and branch naming conventions
+- Commit message format (Conventional Commits, free-form, etc.)
+
+**If "initial backlog" picked, ask:**
+- 1–3 starter tasks to put under "Next Up"
+
+**If "tech docs" picked, ask:**
+- External APIs to document upfront (name + 1-line context for each)
+- Known library quirks or version-pin constraints
 
 ### 3. Write all six files
 
-Write each of the six files at repo root with the templates in the "File Templates" section below. Interpolate the project name where `{PROJECT_NAME}` appears. Write all six — do not skip any "because it's empty" — the empty templates are the scaffolding that catches information later.
+Write each of the six files at repo root using the templates in the "File Templates" section below.
+
+- **Interpolation:** Replace `{PROJECT_NAME}` and `{PROJECT_PURPOSE}` with the answers from Step 2.
+- **Filled sections:** For each section the user provided answers for, replace the italic `_e.g., ..._` placeholder with their actual answer. Keep the section header.
+- **Skipped sections:** Leave the italic placeholder as-is. It serves as a prompt for the user when they come back to fill it later.
+
+Write all six files — never skip a file because "the user didn't fill it in." The empty template is still the scaffolding.
 
 ### 4. Report and hand off
 
@@ -84,15 +129,17 @@ Scaffolded 6 docs at repo root:
   backlog.md          Tasks
   tech_docs.md        Reference
 
-Next steps:
-  1. Fill in tech_stack.md and style_guide.md with the basics before feature work
-  2. For the first feature, invoke globalcoder-workflow:brainstorming
+<note any sections left as empty templates so the user knows what's still TBD>
+
+Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 ```
 
 ## Common Rationalizations
 
 | Excuse | Reality |
 |---|---|
+| "Just write the templates — interview is overkill for the user" | The point of the skill is to capture what's known *now*. Empty templates with "_e.g., ..._" placeholders are the fallback for what the user explicitly skips, not the default for everything. |
+| "I'll batch all the interview questions in one message" | One question at a time. Batching mixes signals and produces sloppier answers. |
 | "Most of these files will be empty — I'll skip the empty ones" | Empty templates with headers ARE the scaffolding. They prompt the right entries when info arrives. Skip = friction later. |
 | "CLAUDE.md exists from `/init` — I'll just add the other 5" | Mixed states cause confusion. Refuse, tell the user to delete the existing CLAUDE.md, then re-run. |
 | "User said 'set up docs' — README.md + CONTRIBUTING.md is enough" | The six files have specific roles. README.md is for humans browsing the repo; these six are for Claude's working context. Don't substitute. |
@@ -102,6 +149,8 @@ Next steps:
 
 ## Red Flags — STOP
 
+- About to write any of the six files before completing the interview → STOP. Interview first.
+- About to ask multiple interview questions in a single message → STOP. One at a time.
 - About to write `CLAUDE.md` and it already exists → STOP. Refuse and exit.
 - About to skip one of the six files because "it's not relevant yet" → STOP. Write the empty template.
 - About to write files in `docs/` or `.claude/` or anywhere other than repo root → STOP. Root is the spec.
@@ -114,6 +163,8 @@ Next steps:
 
 ````markdown
 # {PROJECT_NAME}
+
+{PROJECT_PURPOSE}
 
 ## Workflow Discipline
 

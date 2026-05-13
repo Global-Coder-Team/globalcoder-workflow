@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-05-13
+
+### Changed
+- `project-init` now conducts a brainstorming-style interview before writing files — asks project name and one-line purpose (required), then offers a multi-select gate for optional sections (tech stack, style guide, initial backlog, tech docs). Each picked section runs its own one-question-at-a-time sub-interview. Skipped sections leave italic `_e.g., ..._` placeholders intact as prompts for later.
+- CLAUDE.md template now includes the one-line project purpose under the project name.
+
 ## [1.3.0] - 2026-05-13
 
 ### Added
