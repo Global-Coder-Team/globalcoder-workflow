@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-05-13
+
+### Changed
+- `project-init` style-guide sub-interview now **proposes recommendations** for every question instead of asking open-ended. Each question takes the form "Q? Recommended: X. Accept, customize, or skip." Recommendations are stack-aware (TypeScript+Next.js, Python, Go, Rust, Ruby, etc.) via a new Stack Recommendations reference table; falls back to generic best practices when no stack is chosen.
+- Accepted recommendations are written as actual values in `style_guide.md` — italic `_e.g., ..._` placeholders are now only left in place when the user explicitly says "skip" for that field. Previously, undetected/unanswered fields were left as placeholders, leaving the file half-empty.
+- `project-init` codebase scan now infers more style information automatically: file-naming convention (samples 10–20 source files for case style), branch-naming convention (`git branch -a`), and code-style hints (indentation, semicolons, quotes from a representative source file).
+- Scan-mode gap questions for style-guide fields use the same "Recommended: X" format so users always have a default to accept rather than invent.
+
 ## [1.4.1] - 2026-05-13
 
 ### Fixed

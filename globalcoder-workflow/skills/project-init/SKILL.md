@@ -110,10 +110,33 @@ For each picked section, run the sub-questions below. Sections the user skips ge
 - Infrastructure / hosting (Vercel, Fly.io, AWS, etc.)
 - Tooling (package manager, formatter, linter, test runner)
 
-**If "style guide" picked, ask in sequence:**
-- Formatter / linter preference (Prettier, Ruff, Biome, ESLint, etc.)
-- File and branch naming conventions
-- Commit message format (Conventional Commits, free-form, etc.)
+**If "style guide" picked**, ask the questions below in sequence — but for each, **propose a recommended default** based on the tech stack the user established above (or generic best practices if no stack was chosen). Format each prompt as:
+
+> "Q? Recommended: X. Accept, customize, or skip."
+
+If the user accepts, write the **recommended value** into `style_guide.md` — do *not* leave the italic placeholder. Only leave the placeholder when the user explicitly says "skip."
+
+Use the Stack Recommendations table (below) to pick the default per question:
+
+**Stack Recommendations:**
+
+| Stack | Formatter / Linter | File naming | Branch naming | Commit format |
+|---|---|---|---|---|
+| TypeScript + Next.js / Remix | Prettier + ESLint | kebab-case routes, PascalCase components, camelCase utils | `feature/`, `fix/`, `chore/` + kebab-case | Conventional Commits |
+| TypeScript + Node / Express | Prettier + ESLint | camelCase files, PascalCase types | `feature/`, `fix/`, `chore/` | Conventional Commits |
+| Python + FastAPI / Django / Flask | Ruff + Black | snake_case throughout | `feature/`, `fix/`, `chore/` | Conventional Commits |
+| Rust | rustfmt + clippy | snake_case files, PascalCase types | `feature/`, `fix/` | Conventional Commits |
+| Go | gofmt + golangci-lint | snake_case files, PascalCase exported | `feature/`, `fix/` | Conventional Commits |
+| Ruby + Rails | Rubocop + Standard | snake_case throughout | `feature/`, `fix/` | Free-form or Conventional |
+| (no stack chosen) | Project-language formatter | kebab-case | `feature/`, `fix/`, `chore/` | Conventional Commits |
+
+**Ask in sequence (one per turn):**
+1. Formatter / linter preference — recommend from table
+2. File and variable naming convention — recommend from table
+3. Branch naming convention — recommend from table
+4. Commit message format — recommend from table
+5. **Patterns to follow** — if a stack was chosen, offer stack-specific suggestions to seed (e.g., for Next.js: "Server Components by default, Server Actions for mutations, route handlers in `app/api/`"). For unknown stack, ask the user or skip.
+6. **Patterns to avoid** — same: stack-specific anti-patterns if known (e.g., for Next.js: "no client-side state for server data, no `useEffect` for data fetching"). Otherwise ask or skip.
 
 **If "initial backlog" picked, ask:**
 - 1–3 starter tasks to put under "Next Up"
@@ -137,6 +160,9 @@ Don't ask the user questions you can answer by reading the repo. Scan first, pro
 | `go.mod` | Go version, module path, dependencies |
 | `Gemfile`, `*.gemspec` | Ruby + framework (rails, sinatra) |
 | `.prettierrc*`, `.eslintrc*`, `biome.json`, `ruff.toml`, `.rubocop.yml`, `.editorconfig` | Formatter, linter rules |
+| Sample of 10–20 source files (e.g., `find src -type f \| head -20`) | **File naming convention** — infer dominant case (kebab, camel, snake, Pascal) by inspecting actual filenames |
+| One or two representative source files (read full content) | **Code style hints** — indentation (tabs vs spaces, 2 vs 4), trailing semicolons (TS), single/double quotes, brace style |
+| `git branch -a \| head -20` | **Branch naming convention** — infer prefix pattern (`feature/`, `fix/`, etc.) from existing branches |
 | `prisma/schema.prisma`, `drizzle.config.*`, `alembic.ini`, `schema.rb` | Data layer + ORM |
 | `Dockerfile`, `docker-compose.*`, `fly.toml`, `vercel.json`, `wrangler.toml`, `netlify.toml`, `railway.json` | Infra / hosting |
 | `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml` | CI / build / test commands |
@@ -167,17 +193,19 @@ After confirmation, ask **only the gaps** — the fields the scan couldn't deter
 - **Project name** (if no `package.json` / `Cargo.toml`) — ask, defaulting to the repo directory name
 - **Initial backlog** — ask if there are 1–3 starter tasks to record (or skip)
 - **Tech docs** — ask if there are external APIs / library quirks worth documenting up front (or skip)
-- **Style guide details** — naming conventions and branch naming aren't always in config files; ask if not already covered
+- **Style guide gaps** — when naming convention or branch naming is ambiguous (mixed signals in the repo) or absent (only one branch, no source files yet), ask **with a recommendation** from the Stack Recommendations table — don't leave it open-ended.
+- **Patterns to follow / avoid** — these almost never come from a scan. Offer stack-specific recommendations (see Step 3a) and let the user accept/customize/skip.
 
-Use the same one-question-at-a-time discipline as Step 3a for gap questions.
+Use the same one-question-at-a-time discipline as Step 3a for gap questions, and the same "Recommended: X. Accept, customize, or skip." format so the user always has a default to fall back on.
 
 ### 4. Write all six files
 
 Write each of the six files at repo root using the templates in the "File Templates" section below.
 
 - **Interpolation:** Replace `{PROJECT_NAME}` and `{PROJECT_PURPOSE}` with the answers / detected values.
-- **Filled sections:** Replace each italic `_e.g., ..._` placeholder with the actual value (from scan or user answer). Keep the section header.
-- **Skipped / undetected sections:** Leave the italic placeholder as-is. It serves as a prompt for the user when they come back to fill it later.
+- **Filled sections:** Replace each italic `_e.g., ..._` placeholder with the actual value (from scan, user answer, or accepted recommendation). Keep the section header.
+- **Skipped sections:** Leave the italic placeholder as-is *only* when the user explicitly said "skip" for that field. If the user accepted a recommendation, write the recommendation as the value.
+- **Undetected fields in scan mode**: if the scan couldn't determine a field and the user hasn't been asked yet, use a stack-aware recommendation from the Stack Recommendations table rather than leaving the placeholder.
 
 Write all six files — never skip a file because "the user didn't fill it in." The empty template is still the scaffolding.
 
@@ -205,6 +233,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 | "I'll batch all the interview questions in one message" | One question at a time. Batching mixes signals and produces sloppier answers. |
 | "Repo has files — I'll skip the scan and just interview the user" | If `package.json` exists, asking the user "what's your framework?" wastes their time. Scan first; ask only the gaps. |
 | "Scan is good enough — I'll write everything without confirming" | Detection is heuristic and can be wrong (e.g., Prisma listed as devDep that's been replaced by Drizzle). Always show the detection summary and let the user correct before writing. |
+| "User said 'skip' early in the style-guide flow — I'll just leave the placeholder" | Only if the user said skip *for that specific question*. If they're still answering, propose the stack-aware recommendation rather than leaving sections empty. |
+| "There's no clear best practice — I'll ask open-ended" | Open-ended questions force the user to invent answers under pressure. Propose a recommendation; let them override if they have one. The recommendation table covers the common cases. |
 | "Most of these files will be empty — I'll skip the empty ones" | Empty templates with headers ARE the scaffolding. They prompt the right entries when info arrives. Skip = friction later. |
 | "CLAUDE.md exists from `/init` — I'll just add the other 5" | Mixed states cause confusion. Refuse, tell the user to delete the existing CLAUDE.md, then re-run. |
 | "User said 'set up docs' — README.md + CONTRIBUTING.md is enough" | The six files have specific roles. README.md is for humans browsing the repo; these six are for Claude's working context. Don't substitute. |
@@ -223,6 +253,8 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 - About to write files in `docs/` or `.claude/` or anywhere other than repo root → STOP. Root is the spec.
 - About to invent new file names (e.g., `tasks.md` instead of `backlog.md`, `ADR.md` instead of `memory.md`) → STOP. Use the canonical names.
 - About to start coding the first feature before the user has confirmed the scaffolding → STOP. Hand off to brainstorming first.
+- About to ask a style-guide question without a recommended default → STOP. Use the Stack Recommendations table (or generic-best-practice defaults if no stack is known).
+- About to leave a style_guide.md section empty when the user accepted the recommendation → STOP. Write the recommended value as the actual content.
 
 ## File Templates
 

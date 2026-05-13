@@ -1,6 +1,6 @@
 # globalcoder-workflow Plugin Reference
 
-**Version:** 1.4.1 | **License:** MIT | **22 skills, 1 agent, 4 commands**
+**Version:** 1.5.0 | **License:** MIT | **22 skills, 1 agent, 4 commands**
 
 ## Quick Start
 
