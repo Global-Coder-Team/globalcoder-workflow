@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-05-13
+
+### Changed
+- `project-init` tech-stack sub-interview now uses **cascading recommendations**. Each question's recommended default depends on prior answers: picking TypeScript narrows the framework recommendation to Next.js / Remix / Hono / Express; picking Hono narrows the data layer recommendation to Postgres + Drizzle; etc. Reference tables in the skill cover TypeScript, JavaScript, Python, Rust, Go, and Ruby across language → framework → data layer → infrastructure → tooling.
+- Tooling is now asked as **one bundled question** (package manager + test runner + formatter + linter + type checker) instead of five separate prompts, with a single recommendation per language (e.g., "pnpm + Vitest + Prettier + ESLint + tsc" for TypeScript).
+- Accepted recommendations are written as concrete values in `tech_stack.md` — italic `_e.g., ..._` placeholders are now only left in place when the user explicitly says "skip" for that field. Same behavior as the style-guide upgrade in 1.5.0.
+- Scan-mode (existing-codebase path) now also uses cascading recommendations for the rare cases where it detects the language but not the framework / data layer / hosting (e.g., monorepo subdirectories or pre-deployment repos).
+
 ## [1.5.0] - 2026-05-13
 
 ### Changed

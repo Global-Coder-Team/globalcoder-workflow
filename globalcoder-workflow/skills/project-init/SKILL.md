@@ -103,12 +103,61 @@ Follow brainstorming-style discipline:
 
 For each picked section, run the sub-questions below. Sections the user skips get the empty template as-is.
 
-**If "tech stack" picked, ask in sequence (one per turn):**
-- Primary language (with version if known, e.g., TypeScript 5.4)
-- Framework, if any (Next.js, FastAPI, etc.)
-- Data layer (database, cache, object storage)
-- Infrastructure / hosting (Vercel, Fly.io, AWS, etc.)
-- Tooling (package manager, formatter, linter, test runner)
+**If "tech stack" picked**, ask the questions below in sequence — but recommendations **cascade** (each answer narrows the next question's defaults). Use the same prompt format as the style guide: "Q? Recommended: X. Accept, customize, or skip." If the user accepts, write the recommended value into `tech_stack.md` — do not leave the placeholder. Only leave the placeholder when the user explicitly says "skip" for that field.
+
+**1. Primary language.** No single recommendation — offer the common choices as a multiple-choice prompt:
+
+> "Primary language? Common choices: TypeScript, JavaScript, Python, Rust, Go, Ruby, Java, C#. Pick one, type a custom answer, or skip."
+
+The language answer drives every subsequent recommendation. If the user skips, run the rest of the questions open-ended.
+
+**2. Framework.** Recommendation depends on the language picked:
+
+| Language | Framework recommendation |
+|---|---|
+| TypeScript / JavaScript | Web app: **Next.js** (or Remix). API only: **Hono** or Express. Frontend only: **Vite + React**. |
+| Python | API: **FastAPI**. Full-stack: **Django**. Lightweight: Flask. |
+| Rust | Web/API: **Axum**. CLI: **clap**. |
+| Go | API: standard **net/http** (or Echo / Chi for more structure). |
+| Ruby | **Rails**. |
+
+**3. Data layer.** Recommendation depends on language + framework:
+
+| Language + framework | Data layer recommendation |
+|---|---|
+| TS + Next.js / Remix / Hono | **Postgres + Prisma** (or Drizzle for type-safe alt) |
+| TS + Node API | **Postgres + Drizzle** (or Prisma) |
+| Python + FastAPI | **Postgres + SQLAlchemy (async)** or asyncpg directly |
+| Python + Django | **Postgres + Django ORM** |
+| Rust + Axum | **Postgres + sqlx** |
+| Go | **Postgres + pgx + sqlc** |
+| Ruby + Rails | **Postgres + ActiveRecord** |
+
+For caching/object storage, recommend **Redis** for cache and **S3 / Cloudflare R2** for object storage if the user signals they need it; otherwise omit and don't ask separately.
+
+**4. Infrastructure / hosting.** Recommendation depends on language + framework:
+
+| Language + framework | Hosting recommendation |
+|---|---|
+| TS + Next.js | **Vercel** (best fit). Alternatives: Fly.io, Railway, Render. |
+| TS + Node API | **Fly.io** or **Railway**. Render also fine. |
+| Python | **Fly.io** or **Railway** (long-running). **AWS Lambda** for serverless. |
+| Rust | **Fly.io**, **Railway**, or **shuttle.rs**. |
+| Go | **Fly.io**, **Railway**, or **Cloud Run**. |
+| Ruby + Rails | **Fly.io** or **Render**. Heroku still works. |
+
+**5. Tooling** (package manager, test runner, formatter, linter, type-checker — one bundle question). Recommendation depends on language:
+
+| Language | Tooling recommendation |
+|---|---|
+| TypeScript | **pnpm + Vitest + Prettier + ESLint + tsc** |
+| JavaScript | **pnpm + Vitest + Prettier + ESLint** |
+| Python | **uv + pytest + Ruff + mypy** |
+| Rust | **cargo + rustfmt + clippy** (built-in test runner) |
+| Go | **go modules + go test + gofmt + golangci-lint** |
+| Ruby | **bundler + rspec + Rubocop** |
+
+Present the tooling bundle as one prompt ("Tooling? Recommended: pnpm + Vitest + Prettier + ESLint + tsc. Accept, customize, or skip.") rather than asking five separate sub-questions — agents-of-decision-fatigue is real.
 
 **If "style guide" picked**, ask the questions below in sequence — but for each, **propose a recommended default** based on the tech stack the user established above (or generic best practices if no stack was chosen). Format each prompt as:
 
@@ -194,6 +243,7 @@ After confirmation, ask **only the gaps** — the fields the scan couldn't deter
 - **Initial backlog** — ask if there are 1–3 starter tasks to record (or skip)
 - **Tech docs** — ask if there are external APIs / library quirks worth documenting up front (or skip)
 - **Style guide gaps** — when naming convention or branch naming is ambiguous (mixed signals in the repo) or absent (only one branch, no source files yet), ask **with a recommendation** from the Stack Recommendations table — don't leave it open-ended.
+- **Tech stack gaps** — when the scan detects the language but not the framework / data layer / hosting (rare but happens in monorepo subdirs or pre-deployment repos), use the **cascading recommendations** from Step 3a's tech-stack tables. Format: "I couldn't detect your hosting. Recommended for {detected stack}: {X}. Accept, customize, or skip."
 - **Patterns to follow / avoid** — these almost never come from a scan. Offer stack-specific recommendations (see Step 3a) and let the user accept/customize/skip.
 
 Use the same one-question-at-a-time discipline as Step 3a for gap questions, and the same "Recommended: X. Accept, customize, or skip." format so the user always has a default to fall back on.
@@ -234,7 +284,9 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 | "Repo has files — I'll skip the scan and just interview the user" | If `package.json` exists, asking the user "what's your framework?" wastes their time. Scan first; ask only the gaps. |
 | "Scan is good enough — I'll write everything without confirming" | Detection is heuristic and can be wrong (e.g., Prisma listed as devDep that's been replaced by Drizzle). Always show the detection summary and let the user correct before writing. |
 | "User said 'skip' early in the style-guide flow — I'll just leave the placeholder" | Only if the user said skip *for that specific question*. If they're still answering, propose the stack-aware recommendation rather than leaving sections empty. |
-| "There's no clear best practice — I'll ask open-ended" | Open-ended questions force the user to invent answers under pressure. Propose a recommendation; let them override if they have one. The recommendation table covers the common cases. |
+| "There's no clear best practice — I'll ask open-ended" | Open-ended questions force the user to invent answers under pressure. Propose a recommendation; let them override if they have one. The recommendation tables cover the common cases for both style and tech-stack questions. |
+| "I asked the language; now I'll ask the framework open-ended" | Recommendations *cascade*. Once the language is known, the framework / data layer / hosting / tooling recommendations narrow accordingly. Use them. |
+| "Let me ask separately about package manager, test runner, formatter, linter, type-checker" | One question for the tooling bundle, not five. Decision fatigue erodes the value of every additional prompt. |
 | "Most of these files will be empty — I'll skip the empty ones" | Empty templates with headers ARE the scaffolding. They prompt the right entries when info arrives. Skip = friction later. |
 | "CLAUDE.md exists from `/init` — I'll just add the other 5" | Mixed states cause confusion. Refuse, tell the user to delete the existing CLAUDE.md, then re-run. |
 | "User said 'set up docs' — README.md + CONTRIBUTING.md is enough" | The six files have specific roles. README.md is for humans browsing the repo; these six are for Claude's working context. Don't substitute. |
@@ -253,8 +305,9 @@ Next: for the first feature, invoke globalcoder-workflow:brainstorming.
 - About to write files in `docs/` or `.claude/` or anywhere other than repo root → STOP. Root is the spec.
 - About to invent new file names (e.g., `tasks.md` instead of `backlog.md`, `ADR.md` instead of `memory.md`) → STOP. Use the canonical names.
 - About to start coding the first feature before the user has confirmed the scaffolding → STOP. Hand off to brainstorming first.
-- About to ask a style-guide question without a recommended default → STOP. Use the Stack Recommendations table (or generic-best-practice defaults if no stack is known).
-- About to leave a style_guide.md section empty when the user accepted the recommendation → STOP. Write the recommended value as the actual content.
+- About to ask a style-guide or tech-stack question without a recommended default → STOP. Use the recommendation tables (Step 3a) or generic best-practice defaults if no stack is yet known.
+- About to leave a `style_guide.md` or `tech_stack.md` section empty when the user accepted the recommendation → STOP. Write the recommended value as the actual content.
+- About to ask a tech-stack question without cascading from the previous answer → STOP. Each question's recommendation depends on the language (and framework) already chosen — narrow accordingly.
 
 ## File Templates
 
