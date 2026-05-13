@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-05-13
+
+### Fixed
+- All four slash commands (`/project-init`, `/brainstorm`, `/write-plan`, `/execute-plan`) had `disable-model-invocation: true` in their frontmatter, which conflicted with their bodies' instruction to invoke the linked skill via the `Skill` tool. Running any of them produced `Error: Skill ... cannot be used with Skill tool due to disable-model-invocation`. Removed the flag — slash commands now work as designed.
+
 ## [1.4.0] - 2026-05-13
 
 ### Added
