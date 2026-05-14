@@ -4,9 +4,9 @@ Claude Code plugins for structured development workflows and product launch mark
 
 ## Plugins
 
-### [globalcoder-development](./globalcoder-development/) (v2.0.0)
+### [globalcoder-development](./globalcoder-development/) (v3.0.0)
 
-Full development workflow with agent team support, TDD enforcement, parallel execution, and systematic debugging. **23 skills, 6 slash commands, 1 agent** covering the complete development lifecycle:
+Full development workflow with agent team support, TDD enforcement, parallel execution, and systematic debugging. **23 skills, 1 agent** covering the complete development lifecycle. Every skill is invokable as a slash command using its name (e.g., `/brainstorming`, `/writing-plans`, `/project-init`).
 
 - **Workflow**: project-init, brainstorming, ui-design-bootstrap, writing-plans, executing-plans
 - **Execution**: subagent-driven-development, agent-team-development, dispatching-parallel-agents, tmux-parallel-development
@@ -16,9 +16,11 @@ Full development workflow with agent team support, TDD enforcement, parallel exe
 - **Git**: using-git-worktrees, finishing-a-development-branch
 - **Meta**: using-globalcoder-development, writing-skills, preparing-a-release
 
-**Slash commands**: `/project-init`, `/brainstorm`, `/write-plan`, `/execute-plan`, `/review`, `/finish-branch`
+**Common entry-point commands**: `/project-init`, `/brainstorming`, `/writing-plans`, `/executing-plans`, `/requesting-code-review`, `/finishing-a-development-branch`, `/preparing-a-release`
 
-> **Note (v2.0.0):** This plugin was previously named `globalcoder-workflow` (matching the repo name, which was confusing). It was renamed to `globalcoder-development` to distinguish it from the repo. See [`globalcoder-development/CHANGELOG.md`](./globalcoder-development/CHANGELOG.md#200---2026-05-13) for the migration path if you're upgrading.
+> **Note (v3.0.0):** Removed the redundant `commands/` directory; skills now auto-derive their own slash commands. The short-form commands (`/brainstorm`, `/write-plan`, etc.) no longer exist — use the skill names. See [v3.0.0 migration](./globalcoder-development/CHANGELOG.md#300---2026-05-13).
+>
+> **Note (v2.0.0):** This plugin was previously named `globalcoder-workflow` (matching the repo name, which was confusing). It was renamed to `globalcoder-development`. See [v2.0.0 migration](./globalcoder-development/CHANGELOG.md#200---2026-05-13).
 
 ### [globalcoder-marketing](./globalcoder-marketing/) (v1.0.0)
 

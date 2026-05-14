@@ -1,6 +1,6 @@
 # globalcoder-development Plugin Reference
 
-**Version:** 2.0.0 | **License:** MIT | **23 skills, 1 agent, 6 commands**
+**Version:** 3.0.0 | **License:** MIT | **23 skills, 1 agent** (skills auto-derive slash commands)
 
 ## Quick Start
 
@@ -82,16 +82,21 @@ Brainstorm → Design Doc → Write Plan → Execute → Finish Branch
 
 ## Slash Commands
 
-These are shortcuts that trigger the corresponding skill:
+In current Claude Code, **every skill is automatically invokable as a slash command** using the skill's name. There are no separate command files in this plugin — typing `/<skill-name>` runs the skill directly (or `/globalcoder-development:<skill-name>` for the fully-qualified form).
 
-| Command | Triggers Skill | Purpose |
-|---------|---------------|---------|
-| `/project-init` | project-init | Scaffold foundational MD files + lock workflow (run first in any repo) |
-| `/brainstorm` | brainstorming | Explore idea before implementation |
-| `/write-plan` | writing-plans | Create implementation plan |
-| `/execute-plan` | executing-plans | Execute plan in batches with checkpoints |
-| `/review` | requesting-code-review | Request code review via the code-reviewer agent |
-| `/finish-branch` | finishing-a-development-branch | Verify, choose merge/PR/keep/discard, update tracking, cleanup |
+Common entry-point skills:
+
+| Command | Purpose |
+|---|---|
+| `/project-init` | Scaffold foundational MD files + lock workflow (run first in any repo) |
+| `/brainstorming` | Explore idea before implementation |
+| `/writing-plans` | Create implementation plan |
+| `/executing-plans` | Execute plan in batches with checkpoints |
+| `/requesting-code-review` | Request code review via the code-reviewer agent |
+| `/finishing-a-development-branch` | Verify, choose merge/PR/keep/discard, update tracking, cleanup |
+| `/preparing-a-release` | Version bump across manifests, CHANGELOG, tag, push |
+
+All 23 skills can be invoked the same way. See the [All Skills](#all-skills) section below for the complete list.
 
 ---
 

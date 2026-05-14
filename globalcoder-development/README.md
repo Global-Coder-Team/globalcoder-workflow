@@ -78,14 +78,19 @@ Detected items are presented as multi-selects for the user to confirm; gaps fall
 
 ## Slash Commands
 
+Every skill is invokable as a slash command using the skill's name. Use the namespaced form (`/globalcoder-development:<skill-name>`) if another plugin defines a same-named skill. Common entry points:
+
 | Command | Purpose |
 |---|---|
 | `/project-init` | Scaffold the six foundational MD files + lock workflow (run first in any repo) |
-| `/brainstorm` | Explore intent, requirements, design before writing code |
-| `/write-plan` | Convert a design into a bite-sized implementation plan |
-| `/execute-plan` | Execute a plan in batches with review checkpoints |
-| `/review` | Request a code review of recent changes via the code-reviewer agent |
-| `/finish-branch` | Verify, present merge / PR / keep / discard, update tracking files, cleanup |
+| `/brainstorming` | Explore intent, requirements, design before writing code |
+| `/writing-plans` | Convert a design into a bite-sized implementation plan |
+| `/executing-plans` | Execute a plan in batches with review checkpoints |
+| `/requesting-code-review` | Request a code review of recent changes via the code-reviewer agent |
+| `/finishing-a-development-branch` | Verify, present merge / PR / keep / discard, update tracking files, cleanup |
+| `/preparing-a-release` | Coordinate version bump across manifests, CHANGELOG entry, annotated tag, push |
+
+See the full skill list below for all 23 invokable commands.
 
 ## Skills
 

@@ -2,6 +2,31 @@
 
 All notable changes to this plugin are documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-05-13
+
+### BREAKING — Removed `commands/` directory; skills auto-derive slash commands
+
+In current Claude Code, "custom commands have been merged into skills" — every skill is automatically invokable as a slash command using its name. Our `commands/*.md` files were duplicating this: `commands/brainstorm.md` created `/brainstorm`, but `skills/brainstorming/SKILL.md` already creates `/brainstorming`. Autocomplete showed both, which was confusing.
+
+This release deletes the six command files. The short-form imperative commands (`/brainstorm`, `/write-plan`, etc.) no longer exist. Use the skill names directly:
+
+| Removed | Replacement |
+|---|---|
+| `/brainstorm` | `/brainstorming` |
+| `/write-plan` | `/writing-plans` |
+| `/execute-plan` | `/executing-plans` |
+| `/review` | `/requesting-code-review` |
+| `/finish-branch` | `/finishing-a-development-branch` |
+| `/project-init` | `/project-init` *(unchanged — name matched the skill)* |
+
+Use the namespaced form (`/globalcoder-development:<skill-name>`) to disambiguate when another plugin defines a same-named skill.
+
+### Migration
+
+If your muscle memory typed `/brainstorm`, `/write-plan`, etc., switch to the skill names above. Any scripts, hooks, or aliases that invoked the old commands by name need updating.
+
+The plugin functionality is unchanged — all 23 skills work exactly as before, just under their canonical names.
+
 ## [2.0.0] - 2026-05-13
 
 ### BREAKING — Plugin renamed: `globalcoder-workflow` → `globalcoder-development`
